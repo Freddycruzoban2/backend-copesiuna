@@ -22,6 +22,7 @@ import {
   AsignacionTP_route,
 } from "./Routes";
 import { AppDataSource } from "./db";
+import { errorHandler } from "./Middlewares/error.handler";
 const app = express();
 
 // SETTINGS
@@ -29,6 +30,7 @@ const PORT = process.env.PORT || 3003;
 
 // MIDDLEWARES
 const setupMiddlewares = (app: express.Application) => {
+  app.use(errorHandler); // Manejo de errores
   app.use(morgan("dev")); // Registro de solicitudes
   app.use(cors()); // Permitir CORS
   app.use(cookieParser()); // Parseo de cookies

@@ -63,13 +63,13 @@ export class AutenticacionService {
     });
 
     // si no existe retorna un error
-    if (!user) return { message: "Email is incorrect or doesn't exist" };
+    if (!user) throw new Error("Email is incorrect or doesn't exist");
 
     // comparar las contraseñas
     const pwMatches = await argon.verify(user.password, data.password);
 
     // si no son iguales, retorna un error
-    if (!pwMatches) return { message: "Incorrect password" };
+    if (!pwMatches) throw new Error("Incorrect password");
 
     try {
       // devuelve un token al user
@@ -80,7 +80,7 @@ export class AutenticacionService {
       };
     } catch (error) {
       console.error("Error al crear respuesta:", error);
-      return { message: "Error al crear respuesta:" };
+      throw new Error("Error al crear respuesta de token");
     }
   };
 

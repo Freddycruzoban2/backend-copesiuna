@@ -11,7 +11,7 @@ export class AutenticacionController {
 
   signin = async (data: LoginUser_dto): Promise<ApiResponse<any>> => {
     const result = await this.authService.signin(data);
-    return new ApiResponse(result, "Usuario logueado con exito");
+    return new ApiResponse(result, "Usuario Autenticado con Exito");
   };
 
   signup = async (data: CreateUser_dto): Promise<ApiResponse<any>> => {

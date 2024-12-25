@@ -19,7 +19,7 @@ export class CreateUser_dto {
 
   @IsString()
   @IsOptional()
-  @MinLength(8)
+  @MinLength(3)
   apellido!: string;
 
   @IsString()

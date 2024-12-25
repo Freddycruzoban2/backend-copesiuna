@@ -16,7 +16,8 @@ export class UserService {
       await new_user.save();
       return new_user;
     } catch (error) {
-      return { message: "Error al crear usuario", error: error };
+      console.log("error", error);
+      return { message: "Error al crear usuario", error: (error as any).message };
     }
   };
 

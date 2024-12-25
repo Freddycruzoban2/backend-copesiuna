@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Cultivo, Parcela, Productor, TipoParcela } from "../entities";
 import { ProductorInterface } from "../interfaces";
 import { CreateParcela_dto, UpdateParcela_dto } from "../Dtos/parcelas_dto";
+import { findEntityById } from "../helpers";
 
 export class ParcelaService {
   createParcela = async (data: CreateParcela_dto) => {
@@ -14,22 +15,17 @@ export class ParcelaService {
         tipoParcelaId,
       } = data;
 
-      const productor = await Productor.findOneBy({ id: productorId });
-      if (!productor) {
-        throw new Error("El productor no existe");
-      }
-
-      // Buscar el cultivo por ID
-      const cultivo = await Cultivo.findOneBy({ id: cultivoId });
-      if (!cultivo) {
-        throw new Error("El cultivo no existe");
-      }
-
-      // Buscar el tipo de parcela por ID
-      const tipo_parcela = await TipoParcela.findOneBy({ id: tipoParcelaId });
-      if (!tipo_parcela) {
-        throw new Error("El tipo de parcela no existe");
-      }
+      const productor = await findEntityById(
+        Productor,
+        productorId,
+        "Productor"
+      );
+      const cultivo = await findEntityById(Cultivo, cultivoId, "Cultivo");
+      const tipo_parcela = await findEntityById(
+        TipoParcela,
+        tipoParcelaId,
+        "Tipo de Parcela"
+      );
 
       // Crear una nueva parcela
       const new_parcela = new Parcela();
