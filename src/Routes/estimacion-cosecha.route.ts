@@ -17,7 +17,10 @@ EstimacionCosecha_route.get(
       const response = await EstimacionCosechaCotrl.find_all();
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -33,7 +36,10 @@ EstimacionCosecha_route.post(
       const response = await EstimacionCosechaCotrl.create_one(req.body);
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -49,7 +55,10 @@ EstimacionCosecha_route.delete(
       const response = await EstimacionCosechaCotrl.delete_one(id);
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -66,7 +75,10 @@ EstimacionCosecha_route.patch(
       const response = await EstimacionCosechaCotrl.update_one(id, req.body);
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }

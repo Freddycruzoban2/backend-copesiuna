@@ -17,7 +17,10 @@ export class UserService {
       return new_user;
     } catch (error) {
       console.log("error", error);
-      return { message: "Error al crear usuario", error: (error as any).message };
+      return {
+        message: "Error al crear usuario",
+        error: (error as any).message,
+      };
     }
   };
 
@@ -36,7 +39,8 @@ export class UserService {
         userUpdated,
       };
     } catch (error) {
-      return { message: "Error al actualizar el Usuario", error };
+      console.log("error", error);
+      throw new Error(`Error al actualizar el Usuario: ${(error as any).message}`);
     }
   };
 

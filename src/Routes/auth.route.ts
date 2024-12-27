@@ -14,7 +14,7 @@ Auth_route.post(
       const response = await AuthCtrlo.signup(req.body);
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({ message: "Internal Server Error", error: (error as any).message });
       console.log(error);
     }
   }

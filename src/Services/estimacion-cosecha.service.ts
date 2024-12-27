@@ -69,10 +69,13 @@ export class EstimacionCosechaService {
       relations: ["parcela"],
     });
     if (all_estimacion_cosecha.length === 0) {
-      return { message: "No hay registros de Estimcion Cosecha Aaun" };
+      return { message: "No hay registros de Estimcion Cosecha Aun" };
     }
     return all_estimacion_cosecha;
   };
+
+
+  
 
   deleteEstimacionCosecha = async (id: number) => {
     try {

@@ -15,7 +15,10 @@ user_route.post(
       const response = await UserCtrl.create_one(req.body);
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -30,7 +33,10 @@ user_route.get(
       const response = await UserCtrl.find_all();
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -46,7 +52,10 @@ user_route.delete(
       const response = await UserCtrl.delete_one(id);
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -63,7 +72,10 @@ user_route.patch(
       const response = await UserCtrl.update_one(id, req.body);
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }

@@ -14,7 +14,7 @@ Cultivo_route.get(
       const response = await CultivoCotrl.find_all();
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({ message: "Internal Server Error", error: (error as any).message });
       console.log(error);
     }
   }
@@ -30,7 +30,7 @@ Cultivo_route.post(
       const response = await CultivoCotrl.create_one(req.body);
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({ message: "Internal Server Error", error: (error as any).message });
       console.log(error);
     }
   }
@@ -46,7 +46,7 @@ Cultivo_route.delete(
       const response = await CultivoCotrl.delete_one(id);
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({ message: "Internal Server Error", error: (error as any).message });
       console.log(error);
     }
   }
@@ -63,7 +63,7 @@ Cultivo_route.patch(
       const response = await CultivoCotrl.update_one(id, req.body);
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({ message: "Internal Server Error", error: (error as any).message });
       console.log(error);
     }
   }

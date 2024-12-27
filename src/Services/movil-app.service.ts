@@ -99,33 +99,32 @@ export class LoadDataService {
     data: CreateBitacoraEstimacionCosechaDto
   ): Promise<any> => {
     try {
-
       const parcela = await Parcela.findOneBy({
-        id: data.ID_parcela
-      })
+        id: data.ID_parcela,
+      });
       if (!parcela) {
-        return { message: "Parcela data not found" };
+        throw new Error("Parcela data not found");
       }
 
       const productor = await Productor.findOneBy({
-        id: data.ID_productor
-      })
+        id: data.ID_productor,
+      });
       if (!productor) {
-        return { message: "Productor data not found" };
+        throw new Error("Productor data not found");
       }
 
       // Crear la Estimación de Cosecha
       const newEstimacionCosecha = new EstimacionCosecha();
-      (newEstimacionCosecha.estado_clima = data.estadoClima),
-        (newEstimacionCosecha.fecha_create = data.fecha_created),
-        (newEstimacionCosecha.parcela = parcela),
-        await newEstimacionCosecha.save();
+      newEstimacionCosecha.estado_clima = data.estadoClima;
+      newEstimacionCosecha.fecha_create = data.fecha_created;
+      newEstimacionCosecha.parcela = parcela;
+      await newEstimacionCosecha.save();
 
       // Preparar las plantas para bulk insert
       const plantasToInsert = data.plantas.map((planta) => ({
         num_planta: planta.numeroPlanta,
-        id_parcela: data.ID_parcela,
-        id_estimacion: newEstimacionCosecha.id,
+        ID_parcela: parcela.id,
+        estimacion: newEstimacionCosecha,
       }));
 
       const plantasResult = await Plantas.insert(plantasToInsert);
@@ -134,17 +133,16 @@ export class LoadDataService {
       const mazorcasToInsert: {
         cantidad: number;
         estado: string;
-        id_planta: number;
-        id_estimacion: number;
+        ID_planta: number;
       }[] = [];
+
       data.plantas.forEach((planta, index) => {
         const idPlanta = plantasResult.identifiers[index].id; // Obtener el ID de la planta insertada
         planta.mazorcas.forEach((mazorca) => {
           mazorcasToInsert.push({
             cantidad: mazorca.cantidad,
             estado: mazorca.estado,
-            id_planta: idPlanta,
-            id_estimacion: newEstimacionCosecha.id,
+            ID_planta: idPlanta,
           });
         });
       });
@@ -159,7 +157,9 @@ export class LoadDataService {
       };
     } catch (error) {
       console.error(error);
-      throw new Error("Error al guardar la estimación de cosecha");
+      throw new Error(
+        `Error al guardar la estimación de cosecha: ${(error as any).message}`
+      );
     }
   };
 }

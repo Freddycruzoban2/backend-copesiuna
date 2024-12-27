@@ -18,7 +18,10 @@ PropiedadSuelo_route.get(
       const response = await PropiedadesSueloCotrl.find_all();
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -34,7 +37,10 @@ PropiedadSuelo_route.post(
       const response = await PropiedadesSueloCotrl.create_one(req.body);
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -50,7 +56,10 @@ PropiedadSuelo_route.delete(
       const response = await PropiedadesSueloCotrl.delete_one(id);
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -67,7 +76,10 @@ PropiedadSuelo_route.patch(
       const response = await PropiedadesSueloCotrl.update_one(id, req.body);
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }

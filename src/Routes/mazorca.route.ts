@@ -14,7 +14,10 @@ Mazorca_route.get(
       const response = await MazorcaCotrl.find_all();
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -30,7 +33,10 @@ Mazorca_route.post(
       const response = await MazorcaCotrl.create_one(req.body);
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -46,7 +52,10 @@ Mazorca_route.delete(
       const response = await MazorcaCotrl.delete_one(id);
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -63,7 +72,10 @@ Mazorca_route.patch(
       const response = await MazorcaCotrl.update_one(id, req.body);
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }

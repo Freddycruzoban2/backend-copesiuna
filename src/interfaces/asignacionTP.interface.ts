@@ -5,4 +5,5 @@ export interface AsignacionTPInterface {
   productor: Productor;
   user: User;
   estado: boolean;
+  tipo: string;
 }

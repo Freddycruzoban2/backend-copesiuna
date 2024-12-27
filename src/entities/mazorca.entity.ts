@@ -28,6 +28,9 @@ export class Mazorca extends BaseEntity {
   @Column()
   estado!: string;
 
+  @Column()
+  ID_planta!: number;
+
   @CreateDateColumn()
   fecha_create!: Date;
 

@@ -23,7 +23,6 @@ export class Plantas extends BaseEntity {
 
   @Column()
   num_planta!: number
-
   
   @Column()
   ID_parcela!: number

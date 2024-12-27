@@ -23,6 +23,13 @@ export class AsignacionTPService {
       throw new Error("El productor no existe");
     }
 
+    const productorAsingned = await AsignacionTP.findOneBy({
+      productor: { id: data.ID_productor },
+    });
+    if (productorAsingned) {
+      throw new Error("El productor ya esta asignado");
+    }
+
     // Buscar el Tecnico
     const tecnico = await User.findOneBy({
       id: data.ID_user,
@@ -37,12 +44,14 @@ export class AsignacionTPService {
       const newAsignacionTP = new AsignacionTP();
       newAsignacionTP.productor = productor;
       newAsignacionTP.user = tecnico;
+      newAsignacionTP.tipo = data.tipo;
       await newAsignacionTP.save();
       return {
         id: newAsignacionTP.id,
         productor: newAsignacionTP.productor,
         user: newAsignacionTP.user,
         estado: newAsignacionTP.estado,
+        tipo: newAsignacionTP.tipo,
       };
     } catch (error) {
       throw new Error(
@@ -107,8 +116,10 @@ export class AsignacionTPService {
 
   FindAllAsignacionTP = async (): Promise<AsignacionTPInterface[]> => {
     // Buscar asignaciones existentes
-    const find_allAsignacion = await AsignacionTP.find();
-    if (find_allAsignacion.length = 0) {
+    const find_allAsignacion = await AsignacionTP.find({
+      relations: ["productor", "user"],
+    });
+    if (find_allAsignacion.length <= 0) {
       throw new Error("No hay Asignaciones aun...");
     }
     return find_allAsignacion;
@@ -117,7 +128,7 @@ export class AsignacionTPService {
   FindOneAsignacionTP = async (id: number): Promise<AsignacionTPInterface> => {
     // Buscar asignaciones existentes
     const find_oneAsignacion = await AsignacionTP.findOneBy({
-        id: id
+      id: id,
     });
     if (!find_oneAsignacion) {
       throw new Error("No existe esa asignacion...");

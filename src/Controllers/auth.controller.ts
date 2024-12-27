@@ -9,13 +9,11 @@ export class AutenticacionController {
     this.authService = new AutenticacionService();
   }
 
-  signin = async (data: LoginUser_dto): Promise<ApiResponse<any>> => {
-    const result = await this.authService.signin(data);
-    return new ApiResponse(result, "Usuario Autenticado con Exito");
+  signin = async (data: LoginUser_dto): Promise<any> => {
+    return await this.authService.signin(data);
   };
 
-  signup = async (data: CreateUser_dto): Promise<ApiResponse<any>> => {
-    const result = await this.authService.signup(data);
-    return new ApiResponse(result, "datos de Usuario creado con Exito");
+  signup = async (data: CreateUser_dto): Promise<any> => {
+    return await this.authService.signup(data);
   };
 }

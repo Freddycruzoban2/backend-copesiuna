@@ -18,7 +18,10 @@ TipoParcela_route.get(
       const response = await TipoParcelaCotrl.find_all();
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -33,7 +36,10 @@ TipoParcela_route.post(
       const response = await TipoParcelaCotrl.create_one(req.body);
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -49,7 +55,10 @@ TipoParcela_route.delete(
       const response = await TipoParcelaCotrl.delete_one(id);
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -65,7 +74,10 @@ TipoParcela_route.patch(
       const response = await TipoParcelaCotrl.update_one(id, req.body);
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }

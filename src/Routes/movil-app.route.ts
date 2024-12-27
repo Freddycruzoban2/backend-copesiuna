@@ -19,8 +19,10 @@ LoadMovilData_route.post(
       const response = await controller.CreateBitacoraSuelo(req.body);
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
-      console.log(error);
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });      console.log(error);
     }
   }
 );
@@ -35,8 +37,10 @@ LoadMovilData_route.post(
       const response = await controller.CreateBitacoraCosecha(req.body);
       res.status(201).json(response);
     } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error });
-      console.log(error);
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });      console.log(error);
     }
   }
 );

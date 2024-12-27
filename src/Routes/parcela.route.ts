@@ -15,8 +15,11 @@ Parcela_route.get(
       const response = await ParcelaCotrl.find_all();
       res.status(200).json(response);
     } catch (error) {
-      next(error); // Delegar al middleware de errores
-    }
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
+      console.log(error);    }
   }
 );
 
@@ -30,8 +33,11 @@ Parcela_route.post(
       const response = await ParcelaCotrl.create_one(req.body);
       res.status(201).json(response);
     } catch (error) {
-      next(error);
-    }
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
+      console.log(error);    }
   }
 );
 
@@ -45,7 +51,11 @@ Parcela_route.delete(
       const response = await ParcelaCotrl.delete_one(id);
       res.status(200).json(response);
     } catch (error) {
-      next(error);
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
+      console.log(error);
     }
   }
 );
@@ -61,7 +71,11 @@ Parcela_route.patch(
       const response = await ParcelaCotrl.update_one(id, req.body);
       res.status(200).json(response);
     } catch (error) {
-      next(error);
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
+      console.log(error);
     }
   }
 );

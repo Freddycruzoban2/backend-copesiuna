@@ -29,12 +29,12 @@ export class AsignacionTPController {
 
   delete_one = async (id: number): Promise<ApiResponse<any>> => {
     const result = await this.service.DeleteAsignacionTP(id);
-    return new ApiResponse(result, "Asignacion Actualizada con Exito");
+    return new ApiResponse(result, "Asignacion eliminada con Exito");
   };
 
   findall = async (): Promise<ApiResponse<any>> => {
     const result = await this.service.FindAllAsignacionTP();
-    return new ApiResponse(result, "Asignacion Actualizada con Exito");
+    return new ApiResponse(result, "Datos de Asignaciones retornados con Exito");
   };
 
   find_one = async (id: number): Promise<ApiResponse<any>> => {
