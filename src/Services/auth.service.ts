@@ -116,4 +116,8 @@ export class AutenticacionService {
 
     return jwt.sign(payload, Secret, config);
   };
+
+  fillData() {
+    
+  }
 }

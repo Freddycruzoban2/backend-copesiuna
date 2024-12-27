@@ -32,9 +32,6 @@ export class LoadDataService {
       { nombre: "sulfate", dato: data.sulfate },
     ];
 
-    // Fecha actual
-    const fechaCreate_propiedad = new Date();
-
     // Buscar el productor
     const productor = await Productor.findOneBy({ id: data.productor_id });
     if (!productor) {
@@ -98,6 +95,7 @@ export class LoadDataService {
   CreateBitacoraCosecha = async (
     data: CreateBitacoraEstimacionCosechaDto
   ): Promise<any> => {
+
     try {
       const parcela = await Parcela.findOneBy({
         id: data.ID_parcela,
@@ -124,7 +122,7 @@ export class LoadDataService {
       const plantasToInsert = data.plantas.map((planta) => ({
         num_planta: planta.numeroPlanta,
         ID_parcela: parcela.id,
-        estimacion: newEstimacionCosecha,
+        ID_estimacion: newEstimacionCosecha.id,
       }));
 
       const plantasResult = await Plantas.insert(plantasToInsert);

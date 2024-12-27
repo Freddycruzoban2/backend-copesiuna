@@ -22,10 +22,16 @@ export class Plantas extends BaseEntity {
   id!: number;
 
   @Column()
-  num_planta!: number
+  num_planta!: number;
+
+  @Column({default: 'sana'})
+  estado!: string;
   
   @Column()
-  ID_parcela!: number
+  ID_parcela!: number;
+
+  @Column()
+  ID_estimacion!: number;
   
   @CreateDateColumn()
   fecha_create!: Date;

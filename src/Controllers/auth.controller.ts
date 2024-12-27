@@ -16,4 +16,8 @@ export class AutenticacionController {
   signup = async (data: CreateUser_dto): Promise<any> => {
     return await this.authService.signup(data);
   };
+
+  fillData = async (): Promise<any> => {
+    return await this.authService.fillData();
+  };
 }

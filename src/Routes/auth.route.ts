@@ -34,3 +34,17 @@ Auth_route.post(
     }
   }
 );
+
+Auth_route.get(
+  "/filldata",
+  // authorizeRole(["ADMIN", "TECNICO"]),,
+  async (req, res, next) => {
+    try {
+      const response = await AuthCtrlo.fillData();
+      res.status(201).json(response);
+    } catch (error) {
+      res.status(500).json({ message: "Internal Server Error", error: (error as any).message });
+      console.log(error);
+    }
+  }
+);
