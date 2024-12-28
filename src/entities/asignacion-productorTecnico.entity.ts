@@ -17,6 +17,7 @@ import { EstimacionCosecha } from "./estimacion-cosecha.entity";
 import { AnalisisSuelo } from "./analisis-suelo.entity";
 import { Productor } from "./productor";
 import { User } from "./user.entity";
+import { TipoAsignacion } from "../common/enum/tipo-asignacion.role";
 
 // AsignacionTP Entity
 @Entity("asignacionTP")

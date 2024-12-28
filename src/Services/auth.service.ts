@@ -22,6 +22,10 @@ import { getRepository, QueryFailedError } from "typeorm";
 import { UserInterface } from "../interfaces";
 import { CreateUser_dto, LoginUser_dto } from "../Dtos/user_dto";
 import { CreateProductor_dto } from "../Dtos/productor_dto";
+import { CreateParcela_dto } from "../Dtos/parcelas_dto";
+import { CreateCultivo_dto } from "../Dtos/cultivo_dto";
+import { Role } from "../common/enum/role.enum";
+import { TipoAsignacion } from "../common/enum/tipo-asignacion.role";
 
 export class AutenticacionService {
   signup = async (
@@ -199,7 +203,7 @@ export class AutenticacionService {
     });
 
     // Productor data seed
-    const productor_data: CreateProductor_dto = [
+    const productor_data = [
       {
         nombre: "Productor 1",
         apellido: "Primero",
@@ -227,23 +231,88 @@ export class AutenticacionService {
     ];
     await Productor.insert(productor_data);
 
+    // Cultivo data seed
+    const cultivo_data= [
+      {
+        cultivo: "cacao",
+        edad: "2 meses",
+      },
+    ];
+    await Cultivo.insert(cultivo_data)
+
+    // Tipo Parcela data seed
+    const tipo_parcela_data = [
+      {
+        descripcion: "parcela abierta",
+      },
+      {
+        descripcion: "parcela cerrada",
+      },
+    ];
+    await Parcela.insert(tipo_parcela_data)
+
+    // Parcela data seed
+    const parcela_data = [
+      {
+        descripcion: "parcela de cacao",
+        tamaño_parcela: "2 mz",
+        ID_productor: 1,
+        ID_cultivo: 1,
+        ID_tipo_parcela: 1
+      },
+      {
+        descripcion: "parcela de cacao",
+        tamaño_parcela: "2 mz",
+        ID_productor: 2,
+        ID_cultivo: 1,
+        ID_tipo_parcela: 1
+      },
+      {
+        descripcion: "parcela de cacao",
+        tamaño_parcela: "2 mz",
+        ID_productor: 3,
+        ID_cultivo: 1,
+        ID_tipo_parcela: 1
+      },
+      {
+        descripcion: "parcela de cacao",
+        tamaño_parcela: "2 mz",
+        ID_productor: 4,
+        ID_cultivo: 1,
+        ID_tipo_parcela: 1
+      }
+    ];
+    await Parcela.insert(parcela_data)
+
+    const password = await argon.hash("12345678")
     // User data seed
-    const userdata: CreateUser_dto = [
+    const userdata = [
       {
         nombre: "Admin 1",
         apellido: "Primero",
         email: "admin@gmail.com",
-        role: "ADMIN",
+        role: Role.Admin,
         password: await argon.hash("12345678"),
       },
       {
         nombre: "Tecnico 1",
         apellido: "Primero",
         email: "tecnico@gmail.com",
-        role: "TECNICO",
-        password: await argon.hash("12345678"),
+        role: Role.TECNICO,
+        password: password,
       },
     ];
     await User.insert(userdata);
+
+    // Asignacion TP data seed
+    const asignacionTP_data = [{
+      ID_productor: 1,
+      ID_user: 2,
+      tipo: TipoAsignacion.ESTIMACION_COSECHA,
+    }]
+    await AsignacionTP.insert(asignacionTP_data)
+
+    return { message: "Base de datos reseteada y rellenada con datos" };
+
   };
 }
