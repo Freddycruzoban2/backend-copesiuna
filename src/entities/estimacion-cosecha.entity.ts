@@ -37,7 +37,7 @@ export class EstimacionCosecha extends BaseEntity {
   parcela!: Parcela;
 
   @OneToMany(() => Plantas, (planta) => planta.estimacion)
-  mazorcas!: Mazorca[];
+  plantas!: Plantas[];
 
   @OneToMany(() => DetalleEstimacionCosecha, (detalle) => detalle.estimacion)
   detalles!: DetalleEstimacionCosecha[];

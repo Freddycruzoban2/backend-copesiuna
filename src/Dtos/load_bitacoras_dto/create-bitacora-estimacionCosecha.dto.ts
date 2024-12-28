@@ -124,14 +124,18 @@ export class PlantaDto {
   numeroPlanta!: number;
 
   @IsOptional()
+  @IsNumber()
+  ID_afectacion!: number;
+
+  @IsOptional()
   @Type(() => MazorcaDto)
   mazorcas!: MazorcaDto[];
 }
 
 export class MazorcaDto {
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  estado!: string; // "sana", "monilia", etc.
+  ID_afectacion!: number; // "sana", "monilia", etc.
 
   @IsNumber()
   @IsOptional()

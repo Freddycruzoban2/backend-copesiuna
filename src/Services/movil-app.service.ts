@@ -95,7 +95,6 @@ export class LoadDataService {
   CreateBitacoraCosecha = async (
     data: CreateBitacoraEstimacionCosechaDto
   ): Promise<any> => {
-
     try {
       const parcela = await Parcela.findOneBy({
         id: data.ID_parcela,
@@ -119,18 +118,35 @@ export class LoadDataService {
       await newEstimacionCosecha.save();
 
       // Preparar las plantas para bulk insert
-      const plantasToInsert = data.plantas.map((planta) => ({
-        num_planta: planta.numeroPlanta,
-        ID_parcela: parcela.id,
-        ID_estimacion: newEstimacionCosecha.id,
-      }));
+      const plantasToInsert = await Promise.all(
+        data.plantas.map(async (planta) => {
+          let afectacion = null;
+          if (planta.ID_afectacion) {
+            afectacion = await AfectacionMazorca.findOneBy({
+              id: planta.ID_afectacion,
+            });
+            // if (!afectacion) {
+            //   // Crear una nueva afectación si no se encuentra
+            //   afectacion = new AfectacionMazorca();
+            //   afectacion.estado = planta.estadoAfectacion; // Asume que tienes un campo estadoAfectacion en los datos
+            //   await afectacion.save();
+            // }
+          }
+          return {
+            num_planta: planta.numeroPlanta,
+            ID_afectacion: planta.ID_afectacion,
+            ID_parcela: parcela.id,
+            ID_estimacion: newEstimacionCosecha.id,
+          };
+        })
+      );
 
       const plantasResult = await Plantas.insert(plantasToInsert);
 
       // 3. Preparar las mazorcas para bulk insert
       const mazorcasToInsert: {
         cantidad: number;
-        estado: string;
+        ID_Afectacion: number;
         ID_planta: number;
       }[] = [];
 
@@ -139,7 +155,7 @@ export class LoadDataService {
         planta.mazorcas.forEach((mazorca) => {
           mazorcasToInsert.push({
             cantidad: mazorca.cantidad,
-            estado: mazorca.estado,
+            ID_Afectacion: mazorca.ID_afectacion,
             ID_planta: idPlanta,
           });
         });

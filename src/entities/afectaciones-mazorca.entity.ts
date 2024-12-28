@@ -1,17 +1,19 @@
 import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    ManyToMany,
-    CreateDateColumn,
-    UpdateDateColumn,
-    BaseEntity,
-    OneToOne,
-  } from 'typeorm';
-import { Mazorca } from './mazorca.entity';
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+  BaseEntity,
+  OneToOne,
+  OneToMany,
+} from "typeorm";
+import { Mazorca } from "./mazorca.entity";
+import { Plantas } from "./planta.entity";
 
 // AfectacionMazorca Entity
-@Entity('afectaciones_mazorcas')
+@Entity("afectaciones_mazorcas")
 export class AfectacionMazorca extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -30,4 +32,7 @@ export class AfectacionMazorca extends BaseEntity {
 
   @OneToOne(() => Mazorca)
   mazorcas!: Mazorca;
+
+  @OneToMany(() => Plantas, (planta) => planta.estimacion)
+  plantas!: Plantas[];
 }
