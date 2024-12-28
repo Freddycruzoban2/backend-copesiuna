@@ -22,22 +22,12 @@ export class MazorcaService {
 
       const new_mazorca = new Mazorca();
       new_mazorca.cantidad = data.cantidad;
-      new_mazorca.estado = data.estado;
-      // Si se recibe una afectacion directa de las mazorcas las buscamos en la base de datos
-      if (data.id_afectaciones) {
-        const afectaciones_mazorca = await AfectacionMazorca.findOneBy({
-          id: data.id_afectaciones,
-        });
-        if (!afectaciones_mazorca) {
-          return "Las afectaciones de mazorca no existen o no han sido añadidas";
-        }
-        new_mazorca.afectacion = afectaciones_mazorca;
-      }
+      new_mazorca.ID_afectacion = data.id_afectacion;
       new_mazorca.planta = planta;
       await new_mazorca.save();
       return new_mazorca;
     } catch (error) {
-      return { message: "Error al crear usuario", error: error };
+      throw new Error(`Error al crear Mazorca: '${(error as any).message}'`);
     }
   };
 
@@ -53,7 +43,9 @@ export class MazorcaService {
         mazorcaUpdated,
       };
     } catch (error) {
-      return { message: "Error al actualizar los datos de Mazorca", error };
+      throw new Error(
+        `Error al actualizar Mazorca: '${(error as any).message}'`
+      );
     }
   };
 
@@ -62,7 +54,7 @@ export class MazorcaService {
       relations: ["afectacion", "planta"],
     });
     if (all_mazorca.length === 0) {
-      return { message: "No hay registros de Mazorca aun..." };
+      throw new Error(`No hay registros de mazorca aun`);
     }
     return all_mazorca;
   };
@@ -71,7 +63,7 @@ export class MazorcaService {
     try {
       const mazorca = await Mazorca.findOne({ where: { id: id } });
       if (!mazorca) {
-        return { message: "Mazorca data not found" };
+        throw new Error(`Mazorca data not found`);
       }
       await Mazorca.delete({ id: id });
       return {
@@ -80,7 +72,7 @@ export class MazorcaService {
       };
     } catch (error) {
       console.log("error", error);
-      return { message: "Error deleting Mazorca data", error: error };
+      throw new Error(`Error al eliminar Mazorca: '${(error as any).message}'`);
     }
   };
 }

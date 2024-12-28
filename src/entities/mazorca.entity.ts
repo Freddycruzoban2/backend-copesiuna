@@ -26,7 +26,7 @@ export class Mazorca extends BaseEntity {
   cantidad!: number;
 
   @Column()
-  estado!: string;
+  ID_afectacion!: number;
 
   @Column()
   ID_planta!: number;
@@ -37,8 +37,8 @@ export class Mazorca extends BaseEntity {
   @UpdateDateColumn()
   fecha_update!: Date;
 
-  @OneToOne(() => AfectacionMazorca, (afectacion) => afectacion.mazorcas)
-  @JoinColumn()
+  @ManyToOne(() => AfectacionMazorca, (afectacion) => afectacion.mazorcas)
+  @JoinColumn({ name: 'ID_afectacion' })
   afectacion!: AfectacionMazorca;
 
   @ManyToOne(() => Plantas, (planta) => planta.mazorcas)

@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import { LoadDataService } from "../Services";
-import { CreateBitacoraSuelo_dto, CreateBitacoraEstimacionCosechaDto } from "../Dtos/load_bitacoras_dto";
+import {
+  CreateBitacoraSuelo_dto,
+  CreateBitacoraEstimacionCosechaDto,
+} from "../Dtos/load_bitacoras_dto";
 import { ApiResponse } from "../common/types/response/api-response";
 
 export class LoadDataController {
@@ -10,17 +13,18 @@ export class LoadDataController {
   }
 
   CreateBitacoraSuelo = async (
+    ID_user: number,
     input: CreateBitacoraSuelo_dto
   ): Promise<ApiResponse<any>> => {
-    const result = await this.service.CreateBitacoraSuelo(input);
+    const result = await this.service.CreateBitacoraSuelo(ID_user, input);
     return new ApiResponse(result, "Bitacora Creada con Exito");
   };
 
   CreateBitacoraCosecha = async (
+    ID_user: number,
     input: CreateBitacoraEstimacionCosechaDto
   ): Promise<ApiResponse<any>> => {
-    const result = await this.service.CreateBitacoraCosecha(input);
+    const result = await this.service.CreateBitacoraCosecha(ID_user, input);
     return new ApiResponse(result, "Bitacora Creada con Exito");
   };
-  
 }

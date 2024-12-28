@@ -30,9 +30,15 @@ export class AfectacionMazorca extends BaseEntity {
   @UpdateDateColumn()
   fecha_update!: Date;
 
-  @OneToOne(() => Mazorca)
-  mazorcas!: Mazorca;
+  @OneToMany(() => Mazorca, (mazorca) => mazorca.afectacion, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
+  mazorcas!: Mazorca[];
 
-  @OneToMany(() => Plantas, (planta) => planta.estimacion)
+  @OneToMany(() => Plantas, (planta) => planta.afectacion, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
   plantas!: Plantas[];
 }

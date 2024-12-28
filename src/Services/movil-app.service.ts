@@ -14,9 +14,17 @@ import {
   CreateBitacoraEstimacionCosechaDto,
   CreateBitacoraSuelo_dto,
 } from "../Dtos/load_bitacoras_dto";
+import { checkUserAssignments } from "../helpers";
 
 export class LoadDataService {
-  CreateBitacoraSuelo = async (data: CreateBitacoraSuelo_dto): Promise<any> => {
+  CreateBitacoraSuelo = async (
+    ID_user: number,
+    data: CreateBitacoraSuelo_dto
+  ): Promise<any> => {
+    const hasAssignments = await checkUserAssignments(ID_user);
+    if (!hasAssignments) {
+      throw new Error("No tiene asignaciones de Productor");
+    }
     const propiedades = [
       { nombre: "tectura", dato: data.tectura },
       { nombre: "color", dato: data.color },
@@ -93,9 +101,15 @@ export class LoadDataService {
   };
 
   CreateBitacoraCosecha = async (
+    ID_user: number,
     data: CreateBitacoraEstimacionCosechaDto
   ): Promise<any> => {
     try {
+      const canProceed = await checkUserAssignments(ID_user);
+      if (!canProceed) {
+        throw new Error("No tiene Asignaciones de Productor");
+      }
+
       const parcela = await Parcela.findOneBy({
         id: data.ID_parcela,
       });

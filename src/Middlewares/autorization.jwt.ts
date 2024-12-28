@@ -30,9 +30,6 @@ export const authenticate = (
       return;
     }
 
-    // Forzamos el tipo a DecodedToken si las propiedades esperadas existen
-    const decodedToken = decoded as JwtPayload & DecodedToken;
-
     // Extraemos el id del token decodificado
     const id_user = decoded.sub as unknown as number;
 

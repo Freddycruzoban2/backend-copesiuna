@@ -14,15 +14,20 @@ LoadMovilData_route.post(
   authenticate,
   authorizeRole(["ADMIN", "TECNICO"]),
   validateDto(CreateBitacoraSuelo_dto),
-  async (req, res) => {
+  async (req, res): Promise<any> => {
     try {
-      const response = await controller.CreateBitacoraSuelo(req.body);
+      const userId = req.user?.id;
+      if (userId === undefined) {
+        return res.status(400).json({ message: "User ID is missing" });
+      }
+      const response = await controller.CreateBitacoraSuelo(userId, req.body);
       res.status(201).json(response);
     } catch (error) {
       res.status(500).json({
         message: "Internal Server Error",
         error: (error as any).message,
-      });      console.log(error);
+      });
+      console.log(error);
     }
   }
 );
@@ -32,15 +37,23 @@ LoadMovilData_route.post(
   authenticate,
   authorizeRole(["ADMIN", "TECNICO"]),
   validateDto(CreateBitacoraEstimacionCosechaDto),
-  async (req, res) => {
+  async (req, res): Promise<any> => {
     try {
-      const response = await controller.CreateBitacoraCosecha(req.body);
+      const ID_user = req.user?.id;
+      if (!ID_user) {
+        return res.status(400).json({ message: "User ID is missing" });
+      }
+      const response = await controller.CreateBitacoraCosecha(
+        ID_user,
+        req.body
+      );
       res.status(201).json(response);
     } catch (error) {
       res.status(500).json({
         message: "Internal Server Error",
         error: (error as any).message,
-      });      console.log(error);
+      });
+      console.log(error);
     }
   }
 );

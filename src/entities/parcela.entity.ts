@@ -40,17 +40,17 @@ export class Parcela extends BaseEntity {
   @JoinColumn({ name: "ID_productor" })
   productor!: Productor;
 
-  @OneToOne(() => Cultivo, (cultivo) => cultivo.parcela) // Relación uno a uno
-  @JoinColumn({ name: "ID_cultivo" }) // Columna que actúa como la clave foránea
-  cultivo!: Cultivo; // Relación con la entidad Cultivo
+  @OneToOne(() => Cultivo, (cultivo) => cultivo.parcela)
+  @JoinColumn({ name: "ID_cultivo" }) 
+  cultivo!: Cultivo; 
 
   @ManyToOne(() => TipoParcela, (tipoParcela) => tipoParcela.parcelas)
   @JoinColumn({ name: "ID_tipo_parcela" })
   tipo!: TipoParcela;
 
-  @OneToMany(() => Plantas, (planta) => planta.parcela)
+  @OneToMany(() => Plantas, (planta) => planta.parcela, { cascade: true, onDelete: "CASCADE" })
   plantas!: Plantas[];
 
-  @OneToMany(() => EstimacionCosecha, (estimacion) => estimacion.parcela)
+  @OneToMany(() => EstimacionCosecha, (estimacion) => estimacion.parcela, { cascade: true, onDelete: "CASCADE" })
   estimaciones!: EstimacionCosecha[];
 }

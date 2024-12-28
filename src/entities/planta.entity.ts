@@ -49,7 +49,7 @@ export class Plantas extends BaseEntity {
   @JoinColumn({ name: "ID_estimacion" })
   estimacion!: EstimacionCosecha;
 
-  @OneToMany(() => Mazorca, (mazorca) => mazorca.planta)
+  @OneToMany(() => Mazorca, (mazorca) => mazorca.planta, { cascade: true, onDelete: "CASCADE" })
   mazorcas!: Mazorca[];
 
   @ManyToOne(() => Parcela, (parcela) => parcela.plantas)

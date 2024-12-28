@@ -43,6 +43,6 @@ export class User extends BaseEntity {
   @UpdateDateColumn({ nullable: true })
   fecha_update!: Date;
 
-  @OneToMany(() => AsignacionTP, (asignacion) => asignacion.user)
+  @OneToMany(() => AsignacionTP, (asignacion) => asignacion.user, { cascade: true, onDelete: "CASCADE" })
   asignacion!: AsignacionTP[];
 }

@@ -33,6 +33,6 @@ export class Cultivo extends BaseEntity {
   @UpdateDateColumn()
   fecha_update!: Date;
 
-  @OneToOne(() => Parcela, (parcela) => parcela.cultivo)
+  @OneToOne(() => Parcela, (parcela) => parcela.cultivo, { cascade: true, onDelete: "CASCADE" })
   parcela!: Parcela; // Relación uno a uno con Parcela
 }

@@ -28,6 +28,6 @@ export class TipoParcela extends BaseEntity {
   @UpdateDateColumn()
   fecha_update!: Date;
 
-  @OneToMany(() => Parcela, (parcela) => parcela.tipo)
+  @OneToMany(() => Parcela, (parcela) => parcela.tipo, { cascade: true, onDelete: "CASCADE" })
   parcelas!: Parcela[];
 }

@@ -41,12 +41,12 @@ export class Productor extends BaseEntity {
   @UpdateDateColumn()
   fecha_update!: Date;
 
-  @OneToMany(() => Parcela, (parcela) => parcela.productor)
+  @OneToMany(() => Parcela, (parcela) => parcela.productor, { cascade: true, onDelete: "CASCADE" })
   parcelas!: Parcela[];
 
-  @OneToMany(() => AnalisisSuelo, (analisis) => analisis.productor)
+  @OneToMany(() => AnalisisSuelo, (analisis) => analisis.productor, { cascade: true, onDelete: "CASCADE" })
   analisis!: AnalisisSuelo[];
 
-  @OneToMany(() => AsignacionTP, (asignacion) => asignacion.productor)
+  @OneToMany(() => AsignacionTP, (asignacion) => asignacion.productor, { cascade: true, onDelete: "CASCADE" })
   asignacion!: AsignacionTP[];
 }

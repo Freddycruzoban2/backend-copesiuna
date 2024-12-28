@@ -18,7 +18,7 @@ import {
   TipoParcela,
   User,
 } from "../entities";
-import { getRepository, QueryFailedError } from "typeorm";
+import { QueryFailedError } from "typeorm";
 import { UserInterface } from "../interfaces";
 import { CreateUser_dto, LoginUser_dto } from "../Dtos/user_dto";
 import { CreateProductor_dto } from "../Dtos/productor_dto";
@@ -26,6 +26,7 @@ import { CreateParcela_dto } from "../Dtos/parcelas_dto";
 import { CreateCultivo_dto } from "../Dtos/cultivo_dto";
 import { Role } from "../common/enum/role.enum";
 import { TipoAsignacion } from "../common/enum/tipo-asignacion.role";
+import { AppDataSource } from "../db";
 
 export class AutenticacionService {
   signup = async (
@@ -137,38 +138,90 @@ export class AutenticacionService {
     return jwt.sign(payload, Secret, config);
   };
 
-  resetAndFillData = async () => {
-    const afectacionMazorcaRepository = getRepository(AfectacionMazorca);
-    const analisis_sueloRepository = getRepository(AnalisisSuelo);
-    const estimacion_cosechaRepository = getRepository(EstimacionCosecha);
-    const AsignacionTPRepository = getRepository(AsignacionTP);
-    const cultivoRepository = getRepository(Cultivo);
-    const userRepository = getRepository(User);
-    const detalleAnalisisRepository = getRepository(DetalleAnalisisSuelo);
-    const detalleEstimacionCosechaRepository = getRepository(
-      DetalleEstimacionCosecha
-    );
-    const mazorcaRepository = getRepository(Mazorca);
-    const parcelaRepository = getRepository(Parcela);
-    const productorRepository = getRepository(Productor);
-    const propiedadesSueloRepository = getRepository(PropiedadesSuelo);
-    const tipoparcelaRepository = getRepository(TipoParcela);
-    const plantasRepository = getRepository(Plantas);
-    // Eliminar datos existentes
-    await afectacionMazorcaRepository.clear();
-    await estimacion_cosechaRepository.clear();
-    await AsignacionTPRepository.clear();
-    await analisis_sueloRepository.clear();
-    await cultivoRepository.clear();
-    await userRepository.clear();
-    await detalleAnalisisRepository.clear();
-    await detalleEstimacionCosechaRepository.clear();
-    await mazorcaRepository.clear();
-    await parcelaRepository.clear();
-    await productorRepository.clear();
-    await propiedadesSueloRepository.clear();
-    await tipoparcelaRepository.clear();
-    await plantasRepository.clear();
+  resetData = async () => {
+    try {
+      if (!AppDataSource.isInitialized) {
+        await AppDataSource.initialize();
+      }
+
+      const queryRunner = AppDataSource.createQueryRunner();
+
+      await queryRunner.startTransaction();
+      try {
+        // Desactiva las restricciones de claves foráneas temporalmente
+        await queryRunner.query(`SET session_replication_role = 'replica';`);
+
+        // Obtiene todas las tablas
+        const tables = await queryRunner.query(`
+          SELECT table_name
+          FROM information_schema.tables
+          WHERE table_schema = 'public' AND table_type = 'BASE TABLE';
+        `);
+
+        // Vacía cada tabla
+        for (const table of tables) {
+          const tableName = table.table_name;
+          await queryRunner.query(
+            `TRUNCATE TABLE "${tableName}" RESTART IDENTITY CASCADE;`
+          );
+        }
+
+        // Reactiva las restricciones de claves foráneas
+        await queryRunner.query(`SET session_replication_role = 'origin';`);
+
+        await queryRunner.commitTransaction();
+        console.log("Base de datos vaciada y los IDs reiniciados.");
+      } catch (error) {
+        await queryRunner.rollbackTransaction();
+        console.error("Error al vaciar la base de datos:", error);
+      } finally {
+        await queryRunner.release();
+      }
+    } catch (error) {
+      console.error("Error al inicializar el datasource:", error);
+      throw new Error(
+        `Error al vacial la base de datos ${(error as any).message}`
+      );
+    }
+  };
+
+  fillData = async () => {
+    // const afectacionMazorcaRepository =
+    //   AppDataSource.getRepository(AfectacionMazorca);
+    // const analisis_sueloRepository = AppDataSource.getRepository(AnalisisSuelo);
+    // const estimacion_cosechaRepository =
+    //   AppDataSource.getRepository(EstimacionCosecha);
+    // const AsignacionTPRepository = AppDataSource.getRepository(AsignacionTP);
+    // const cultivoRepository = AppDataSource.getRepository(Cultivo);
+    // const userRepository = AppDataSource.getRepository(User);
+    // const detalleAnalisisRepository =
+    //   AppDataSource.getRepository(DetalleAnalisisSuelo);
+    // const detalleEstimacionCosechaRepository = AppDataSource.getRepository(
+    //   DetalleEstimacionCosecha
+    // );
+    // const mazorcaRepository = AppDataSource.getRepository(Mazorca);
+    // const parcelaRepository = AppDataSource.getRepository(Parcela);
+    // const productorRepository = AppDataSource.getRepository(Productor);
+    // const propiedadesSueloRepository =
+    //   AppDataSource.getRepository(PropiedadesSuelo);
+    // const tipoparcelaRepository = AppDataSource.getRepository(TipoParcela);
+    // const plantasRepository = AppDataSource.getRepository(Plantas);
+
+    // // Eliminar datos existentes
+    // await mazorcaRepository.clear();
+    // await productorRepository.clear();
+    // await parcelaRepository.clear();
+    // await estimacion_cosechaRepository.clear();
+    // await afectacionMazorcaRepository.clear();
+    // await AsignacionTPRepository.clear();
+    // await analisis_sueloRepository.clear();
+    // await cultivoRepository.clear();
+    // await userRepository.clear();
+    // await detalleAnalisisRepository.clear();
+    // await detalleEstimacionCosechaRepository.clear();
+    // await propiedadesSueloRepository.clear();
+    // await tipoparcelaRepository.clear();
+    // await plantasRepository.clear();
 
     const dataMazorcas = [
       "monilla",
@@ -232,13 +285,13 @@ export class AutenticacionService {
     await Productor.insert(productor_data);
 
     // Cultivo data seed
-    const cultivo_data= [
+    const cultivo_data = [
       {
         cultivo: "cacao",
         edad: "2 meses",
       },
     ];
-    await Cultivo.insert(cultivo_data)
+    await Cultivo.insert(cultivo_data);
 
     // Tipo Parcela data seed
     const tipo_parcela_data = [
@@ -249,7 +302,7 @@ export class AutenticacionService {
         descripcion: "parcela cerrada",
       },
     ];
-    await Parcela.insert(tipo_parcela_data)
+    await TipoParcela.insert(tipo_parcela_data);
 
     // Parcela data seed
     const parcela_data = [
@@ -258,33 +311,33 @@ export class AutenticacionService {
         tamaño_parcela: "2 mz",
         ID_productor: 1,
         ID_cultivo: 1,
-        ID_tipo_parcela: 1
+        ID_tipo_parcela: 1,
       },
       {
         descripcion: "parcela de cacao",
         tamaño_parcela: "2 mz",
         ID_productor: 2,
         ID_cultivo: 1,
-        ID_tipo_parcela: 1
+        ID_tipo_parcela: 1,
       },
       {
         descripcion: "parcela de cacao",
         tamaño_parcela: "2 mz",
         ID_productor: 3,
         ID_cultivo: 1,
-        ID_tipo_parcela: 1
+        ID_tipo_parcela: 1,
       },
       {
         descripcion: "parcela de cacao",
         tamaño_parcela: "2 mz",
         ID_productor: 4,
         ID_cultivo: 1,
-        ID_tipo_parcela: 1
-      }
+        ID_tipo_parcela: 1,
+      },
     ];
-    await Parcela.insert(parcela_data)
+    await Parcela.insert(parcela_data);
 
-    const password = await argon.hash("12345678")
+    const password = await argon.hash("12345678");
     // User data seed
     const userdata = [
       {
@@ -305,14 +358,15 @@ export class AutenticacionService {
     await User.insert(userdata);
 
     // Asignacion TP data seed
-    const asignacionTP_data = [{
-      ID_productor: 1,
-      ID_user: 2,
-      tipo: TipoAsignacion.ESTIMACION_COSECHA,
-    }]
-    await AsignacionTP.insert(asignacionTP_data)
+    const asignacionTP_data = [
+      {
+        ID_productor: 1,
+        ID_user: 2,
+        tipo: TipoAsignacion.ESTIMACION_COSECHA,
+      },
+    ];
+    await AsignacionTP.insert(asignacionTP_data);
 
     return { message: "Base de datos reseteada y rellenada con datos" };
-
   };
 }

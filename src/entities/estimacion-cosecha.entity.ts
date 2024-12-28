@@ -39,6 +39,6 @@ export class EstimacionCosecha extends BaseEntity {
   @OneToMany(() => Plantas, (planta) => planta.estimacion)
   plantas!: Plantas[];
 
-  @OneToMany(() => DetalleEstimacionCosecha, (detalle) => detalle.estimacion)
+  @OneToMany(() => DetalleEstimacionCosecha, (detalle) => detalle.estimacion, { cascade: true, onDelete: "CASCADE" })
   detalles!: DetalleEstimacionCosecha[];
 }

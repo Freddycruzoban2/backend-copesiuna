@@ -40,9 +40,9 @@ export class AnalisisSuelo extends BaseEntity {
   @JoinColumn({ name: 'id_productor' })
   productor!: Productor;
 
-  @OneToMany(() => DetalleAnalisisSuelo, (detalle) => detalle.analisis)
+  @OneToMany(() => DetalleAnalisisSuelo, (detalle) => detalle.analisis, { cascade: true, onDelete: "CASCADE" })
   detalles!: DetalleAnalisisSuelo[];
 
-  @OneToMany(() => PropiedadesSuelo, (propiedad) => propiedad.analisis)
+  @OneToMany(() => PropiedadesSuelo, (propiedad) => propiedad.analisis, { cascade: true, onDelete: "CASCADE" })
   propiedades!: PropiedadesSuelo[];
 }

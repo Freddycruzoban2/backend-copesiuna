@@ -18,6 +18,7 @@ export class AutenticacionController {
   };
 
   resetAndFillData = async (): Promise<any> => {
-    return await this.authService.resetAndFillData();
+    await this.authService.resetData();
+    return this.authService.fillData()
   };
 }

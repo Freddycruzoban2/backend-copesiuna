@@ -19,16 +19,8 @@ export class CreateMazorca_dto extends Mazorca {
   descripcion!: string;
 
   @IsNotEmpty()
-  @IsString()
-  estado!: string;
-
-  @IsNotEmpty()
   @IsNumber()
-  id_afectaciones!: number;
-
-  @IsOptional()
-  @IsNumber()
-  id_estimacion!: number;
+  id_afectacion!: number;
 
   @IsNotEmpty()
   @IsNumber()
