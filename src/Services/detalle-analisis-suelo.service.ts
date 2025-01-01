@@ -13,7 +13,7 @@ export class DetalleAnalisisSueloService {
         where: { id: data.id_analisis },
       });
       if (!analisis) {
-        return { message: "datos de Analisis Suelo no encontrados" };
+        throw new Error(`Analisis de Suelo no encontrado`);
       }
 
       const new_detalle_analisis_suelo = new DetalleAnalisisSuelo();
@@ -22,8 +22,10 @@ export class DetalleAnalisisSueloService {
       await new_detalle_analisis_suelo.save();
 
       return new_detalle_analisis_suelo;
-    } catch (error) {
-      return { message: "Error al crear Detalle Analisis Suelo", error: error };
+    } catch (error: any) {
+      throw new Error(
+        `Error al crear Detalle de Analisis Suelo: ${error.message}`
+      );
     }
   };
 
@@ -36,7 +38,7 @@ export class DetalleAnalisisSueloService {
         where: { id: id },
       });
       if (!detalle_analisis_suelo) {
-        return { message: "datos de Detalle Analisis Suelo no encontrados" };
+        throw new Error("datos de Detalle Analisis Suelo no encontrados");
       }
       const detalle_analisis_sueloUpdated = await DetalleAnalisisSuelo.update(
         id,
@@ -44,18 +46,17 @@ export class DetalleAnalisisSueloService {
       );
 
       return {
-        message: "Detalle Analisis suelo, datos actualizado",
         detalle_analisis_sueloUpdated,
       };
-    } catch (error) {
-      return { message: "Error al Detalle Analisis Suelo", error };
+    } catch (error: any) {
+      throw new Error(`Error al Detalle Analisis Suelo: ${error.message}`);
     }
   };
 
   findAllDetalleAnalisisSuelo = async () => {
     const all_detalle_analisis_suelo = await DetalleAnalisisSuelo.find();
     if (all_detalle_analisis_suelo.length === 0) {
-      return { message: "No hay registros de Detalle Analisis Suelo Aaun..." };
+      throw new Error("No hay registros de Detalle Analisis Suelo Aaun...");
     }
     return all_detalle_analisis_suelo;
   };
@@ -66,19 +67,17 @@ export class DetalleAnalisisSueloService {
         where: { id: id },
       });
       if (!detalle_analisis_suelo) {
-        return { message: "Analisis Suelo data not found" };
+        throw new Error("Detalle de Analisis Suelo data not found");
       }
       await DetalleAnalisisSuelo.delete({ id: id });
       return {
         detalle_analisis_suelo,
-        message: "Detalle Analisis Suelo data deleted",
       };
-    } catch (error) {
+    } catch (error: any) {
       console.log("error", error);
-      return {
-        message: "Error deleting Detalle Analisis suelo data",
-        error: error,
-      };
+      throw new Error(
+        `Error deleting Detalle Analisis suelo data: ${error.message}`
+      );
     }
   };
 }

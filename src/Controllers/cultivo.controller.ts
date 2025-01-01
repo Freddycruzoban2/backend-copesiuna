@@ -15,7 +15,7 @@ export class CultivoController {
   };
 
   create_one = async (data: CreateCultivo_dto): Promise<ApiResponse<any>> => {
-    const result = await this.cultivoService.findAllCultivo();
+    const result = await this.cultivoService.createCultivo(data);
     return new ApiResponse(result, "datos de Cultivo creado con Exito");
   };
 

@@ -14,14 +14,14 @@ export class CultivoService {
           where: { id: data.id_parcela },
         });
         if (!parcela) {
-          return { message: "Parcela no encontrada" };
+          throw new Error("Parcela no encontrada");
         }
         newCultivo.parcela = parcela;
       }
       await newCultivo.save();
       return newCultivo;
-    } catch (error) {
-      return { message: "Error al crear el cultivo", error: error };
+    } catch (error: any) {
+      throw new Error(`Error al crear el cultivo: ${error.message}`);
     }
   };
 
@@ -29,7 +29,7 @@ export class CultivoService {
     try {
       const cultivo = await Cultivo.findOne({ where: { id: id } });
       if (!cultivo) {
-        return { message: "Cultivo no encontrado" };
+        throw new Error(`Cultivo no encontrado`);
       }
       // Actualizar el cultivo en la base de datos
       await Cultivo.update(id, { ...data });
@@ -39,17 +39,16 @@ export class CultivoService {
 
       return {
         cultivoUpdated,
-        message: "Cultivo actualizado",
       };
-    } catch (error) {
-      return { message: "Error al actualizar el cultivo", error };
+    } catch (error: any) {
+      throw new Error(`Error al actualizar el cultivo: ${error.message}`);
     }
   };
 
   findAllCultivo = async (): Promise<Cultivo[] | { message: string }> => {
     const all_cultivos = await Cultivo.find();
     if (all_cultivos.length === 0) {
-      return { message: "No hay Productores registrados" };
+      throw new Error(`No hay Cultivos registrados`);
     }
     return all_cultivos;
   };
@@ -58,16 +57,16 @@ export class CultivoService {
     try {
       const cultivo = await Cultivo.findOne({ where: { id: id } });
       if (!cultivo) {
-        return { message: "cultivo not found" };
+        throw new Error(`Cultivo no encontrado`);
       }
       await Cultivo.delete({ id: id });
       return {
         cultivo,
         message: "Cultivo deleted",
       };
-    } catch (error) {
+    } catch (error: any) {
       console.log("error", error);
-      return { message: "Error deleting Cultivo", error: error };
+      throw new Error(`Error al eliminar el cultivo: ${error.message}`);
     }
   };
 }

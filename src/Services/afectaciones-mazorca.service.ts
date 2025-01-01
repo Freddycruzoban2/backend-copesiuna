@@ -19,8 +19,8 @@ export class AfectacionesMazorcaService {
       await new_afectacion_mazorca.save();
 
       return new_afectacion_mazorca;
-    } catch (error) {
-      return { message: "Error al crear Afectacion Mazorca", error: error };
+    } catch (error: any) {
+      throw new Error(`Error al crear Afectacion mazorca: ${error.message}`);
     }
   };
 
@@ -33,18 +33,17 @@ export class AfectacionesMazorcaService {
         where: { id: id },
       });
       if (!afectaciones_mazorca) {
-        return { message: "datos de Afectacion Mazorca no encontrados" };
+        throw new Error(`Afectacion mazorca no encontrada`);
       }
       const afectaciones_mazorcaUpdated = await AfectacionMazorca.update(id, {
         ...data,
       });
 
       return {
-        message: "Mazorca datos actualizado",
         afectaciones_mazorcaUpdated,
       };
-    } catch (error) {
-      return { message: "Error al actualizar Afectaciones de Mazorca", error };
+    } catch (error: any) {
+      throw new Error(`Error al actualizar Afectaciones Mazorca: ${error.message}`);
     }
   };
 
@@ -53,7 +52,7 @@ export class AfectacionesMazorcaService {
   > => {
     const all_afectaciones_mazorca = await AfectacionMazorca.find();
     if (all_afectaciones_mazorca.length === 0) {
-      return { message: "No hay registros de Estado Mazorca aun..." };
+      throw new Error(`No hay Afectaciones de Mazorca registrados`);
     }
     return all_afectaciones_mazorca;
   };
@@ -64,19 +63,16 @@ export class AfectacionesMazorcaService {
         where: { id: id },
       });
       if (!afectaciones_mazorca) {
-        return { message: "Afectaciones Mazorca data not found" };
+        throw new Error(`Datos de Afectaciones de Mazorca no encontrados`);
       }
       await AfectacionMazorca.delete({ id: id });
       return {
         afectaciones_mazorca,
-        message: "afectacion de Mazorca data deleted",
       };
-    } catch (error) {
+    } catch (error: any) {
       console.log("error", error);
-      return {
-        message: "Error deleting Afectacion de Mazorca data",
-        error: error,
-      };
+      throw new Error(`Error al eliminar Afectaciones de Mazorca: ${error.message}`);
+
     }
   };
 }

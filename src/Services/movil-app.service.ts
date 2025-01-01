@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import {
   AfectacionMazorca,
   AnalisisSuelo,
+  AsignacionTP,
   EstimacionCosecha,
   Mazorca,
   Parcela,
@@ -90,6 +91,11 @@ export class LoadDataService {
           fecha_update: productor.fecha_update,
         },
       });
+
+      await AsignacionTP.update(
+        { ID_productor: productor.id },
+        { estado: true }
+      );
       return {
         mensaje: "Bitacora de suelo Cargada",
       };
@@ -186,7 +192,7 @@ export class LoadDataService {
     } catch (error) {
       console.error(error);
       throw new Error(
-        `Error al guardar la estimación de cosecha: ${(error as any).message}`
+        `Error al guardar la estimación de cosecha: "${(error as any).message}"`
       );
     }
   };

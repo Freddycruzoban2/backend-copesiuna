@@ -56,11 +56,10 @@ export class EstimacionCosechaService {
         estimacion_cosechaUpdated,
         message: "Analisis suelo, datos actualizado",
       };
-    } catch (error) {
-      return {
-        message: "Error al actualizar datos de Estimacion Cosecha",
-        error,
-      };
+    } catch (error: any) {
+      throw new Error(
+        `Error al actualizar datos de Estimacion Cosecha: ${error.message}`
+      );
     }
   };
 
@@ -69,13 +68,10 @@ export class EstimacionCosechaService {
       relations: ["parcela"],
     });
     if (all_estimacion_cosecha.length === 0) {
-      return { message: "No hay registros de Estimcion Cosecha Aun" };
+      throw new Error("No hay registros de Estimcion Cosecha Aun");
     }
     return all_estimacion_cosecha;
   };
-
-
-  
 
   deleteEstimacionCosecha = async (id: number) => {
     try {
@@ -83,19 +79,17 @@ export class EstimacionCosechaService {
         where: { id: id },
       });
       if (!estimacion_cosecha) {
-        return { message: "Estimacion Cosecha data not found" };
+        throw new Error("Estimacion Cosecha data not found");
       }
       await EstimacionCosecha.delete({ id: id });
       return {
-        message: "Estimacion Cosecha data deleted",
         estimacion_cosecha,
       };
-    } catch (error) {
+    } catch (error: any) {
       console.log("error", error);
-      return {
-        message: "Error deleting Estimacion Cosecha data",
-        error: error,
-      };
+      throw new Error(
+        `Error al eliminar datos de Estimacion Cosecha: ${error.message}`
+      );
     }
   };
 }

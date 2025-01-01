@@ -11,7 +11,13 @@ export class TipoParcelaService {
     try {
       const new_Tipo_parcela = new TipoParcela();
       new_Tipo_parcela.descripcion = data.descripcion;
-      return new_Tipo_parcela;
+      await new_Tipo_parcela.save();
+      return {
+        id: new_Tipo_parcela.id,
+        descripcion: new_Tipo_parcela.descripcion,
+        fecha_create: new_Tipo_parcela.fecha_create,
+        fecha_update: new_Tipo_parcela.fecha_update,
+      };
     } catch (error) {
       return { message: "Error al crear el Tipo de Parcela", error: error };
     }
@@ -26,17 +32,16 @@ export class TipoParcelaService {
       const tipo_parcela_updated = await TipoParcela.update(id, { ...data });
 
       return {
-        message: "Tipo de Parcela actualizado",
         tipo_parcela_updated,
       };
     } catch (error) {
-      return { message: "Error al actualizar el Tipo de Parcela", error };
+      `Error al actualizar Tipo de Parcela", error: ${(error as any).message}`;
     }
   };
 
   findAllTipoParcela = async () => {
     const all_Tipo_parcelas = await TipoParcela.find();
-    if (!all_Tipo_parcelas) {
+    if (!all_Tipo_parcelas || all_Tipo_parcelas.length === 0) {
       throw new Error("No hay registros de Tipos de Parcela creados...");
     }
     return all_Tipo_parcelas;
@@ -51,11 +56,12 @@ export class TipoParcelaService {
       await TipoParcela.delete({ id: id });
       return {
         tipo_parcela,
-        message: "Tipo de Parcela deleted",
       };
     } catch (error) {
       console.log("error", error);
-      return { message: "Error deleting Tipo de Parcela", error: error };
+      throw new Error(
+        `Error deleting Tipo de Parcela", error: ${(error as any).message}`
+      );
     }
   };
 }

@@ -24,7 +24,7 @@ export class DetalleEstimacionCosechaService {
         where: { id: data.id_estimacion },
       });
       if (!estimacion_cosecha) {
-        return { message: "datos de estimacion_cosecha no encontrados" };
+        throw new Error("datos de estimacion_cosecha no encontrados");
       }
 
       const new_detalle_estimacion_cosecha = new DetalleEstimacionCosecha();
@@ -33,11 +33,10 @@ export class DetalleEstimacionCosechaService {
       await new_detalle_estimacion_cosecha.save();
 
       return new_detalle_estimacion_cosecha;
-    } catch (error) {
-      return {
-        message: "Error al crear Detalle Estimacion Cosecha",
-        error: error,
-      };
+    } catch (error: any) {
+      throw new Error(
+        `Error al crear Detalle Estimacion Cosecha: ${error.message}`
+      );
     }
   };
 
@@ -50,23 +49,19 @@ export class DetalleEstimacionCosechaService {
         { where: { id: id } }
       );
       if (!detalle_estimacion_cosecha) {
-        return {
-          message: "datos de Detalle Estimacion Cosecha no encontrados",
-        };
+        throw new Error("datos de Detalle Estimacion Cosecha no encontrados");
       }
 
       const detalle_estimacion_cosechaUpdated =
         await DetalleEstimacionCosecha.update(id, { ...data });
 
       return {
-        message: "datos de Detalle Estimacion Cosecha actualizado",
         detalle_estimacion_cosechaUpdated,
       };
-    } catch (error) {
-      return {
-        message: "Error al actualizar datos de Detalle Estimacion Cosecha",
-        error,
-      };
+    } catch (error: any) {
+      throw new Error(
+        `Error al actualizar datos de Detalle Estimacion Cosecha: ${error.message}`
+      );
     }
   };
 
@@ -74,9 +69,7 @@ export class DetalleEstimacionCosechaService {
     const all_detalle_estimacion_cosecha =
       await DetalleEstimacionCosecha.find();
     if (all_detalle_estimacion_cosecha.length === 0) {
-      return {
-        message: "No hay registros de Detalle Estimcion Cosecha Aaun...",
-      };
+      throw new Error("No hay registros de Detalle Estimcion Cosecha Aaun...");
     }
     return all_detalle_estimacion_cosecha;
   };
@@ -89,19 +82,17 @@ export class DetalleEstimacionCosechaService {
         }
       );
       if (!detalle_estimacion_cosecha) {
-        return { message: "Detalle_estimacion_cosecha data not found" };
+        throw new Error("Detalle_estimacion_cosecha data not found");
       }
       await DetalleEstimacionCosecha.delete({ id: id });
       return {
-        message: "Detalle Estimacion Cosecha data deleted",
         detalle_estimacion_cosecha,
       };
-    } catch (error) {
+    } catch (error: any) {
       console.log("error", error);
-      return {
-        message: "Error deleting Detalle Estimacion Cosecha data",
-        error: error,
-      };
+      throw new Error(
+        `Error deleting Detalle Estimacion Cosecha data: ${error.message}`
+      );
     }
   };
 }

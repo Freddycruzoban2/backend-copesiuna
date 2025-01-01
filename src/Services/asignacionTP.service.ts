@@ -36,7 +36,7 @@ export class AsignacionTPService {
       role: Role.TECNICO,
     });
     if (!tecnico) {
-      throw new Error("El productor no existe");
+      throw new Error("El Tecnico no existe");
     }
 
     try {
@@ -55,7 +55,7 @@ export class AsignacionTPService {
       };
     } catch (error) {
       throw new Error(
-        `Error al crear la bitácora de suelo: ${(error as any).message}`
+        `Error al crear la AsicnacionTP de suelo: ${(error as any).message}`
       );
     }
   };
