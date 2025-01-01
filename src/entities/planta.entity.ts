@@ -41,15 +41,22 @@ export class Plantas extends BaseEntity {
   @UpdateDateColumn()
   fecha_update!: Date;
 
-  @ManyToOne(() => AfectacionMazorca, (afectacion) => afectacion.plantas)
+  @ManyToOne(() => AfectacionMazorca, (afectacion) => afectacion.plantas, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "ID_afectacion" })
   afectacion!: AfectacionMazorca;
 
-  @ManyToOne(() => EstimacionCosecha, (estimacion) => estimacion.plantas)
+  @ManyToOne(() => EstimacionCosecha, (estimacion) => estimacion.plantas, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "ID_estimacion" })
   estimacion!: EstimacionCosecha;
 
-  @OneToMany(() => Mazorca, (mazorca) => mazorca.planta, { cascade: true, onDelete: "CASCADE" })
+  @OneToMany(() => Mazorca, (mazorca) => mazorca.planta, {
+    cascade: true,
+    onDelete: "CASCADE",
+  })
   mazorcas!: Mazorca[];
 
   @ManyToOne(() => Parcela, (parcela) => parcela.plantas)

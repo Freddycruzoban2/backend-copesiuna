@@ -59,6 +59,16 @@ export class MazorcaService {
     return all_mazorca;
   };
 
+  findAllPlanta = async () => {
+    const all_mazorca = await Plantas.find({
+      relations: ["afectacion", "estimacion"],
+    });
+    if (all_mazorca.length === 0) {
+      throw new Error(`No hay registros de mazorca aun`);
+    }
+    return all_mazorca;
+  };
+
   deleteMazorca = async (id: number) => {
     try {
       const mazorca = await Mazorca.findOne({ where: { id: id } });

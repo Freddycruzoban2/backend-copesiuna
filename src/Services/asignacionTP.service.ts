@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import {
   AnalisisSuelo,
   AsignacionTP,
+  Cultivo,
   Productor,
   PropiedadesSuelo,
   User,
@@ -114,15 +115,39 @@ export class AsignacionTPService {
     return deleteAsignacion;
   };
 
-  FindAllAsignacionTP = async (): Promise<AsignacionTPInterface[]> => {
+  FindAllAsignacionTP = async (id: number): Promise<any> => {
     // Buscar asignaciones existentes
     const find_allAsignacion = await AsignacionTP.find({
-      relations: ["productor", "user"],
+      where: { ID_user: id },
+      relations: ["productor", "productor.parcelas", "user"],
     });
-    if (find_allAsignacion.length <= 0) {
-      throw new Error("No hay Asignaciones aun...");
+    if (find_allAsignacion.length === 0) {
+      throw new Error("No tiene Asignaciones aun...");
     }
-    return find_allAsignacion;
+    const asignaciones = find_allAsignacion.map((asignacion) => ({
+      id: asignacion.id,
+      productor: {
+        id: asignacion.productor.id,
+        nombre: asignacion.productor.nombre,
+        apellido: asignacion.productor.apellido,
+        direccion: asignacion.productor.direccion,
+        cedula: asignacion.productor.cedula,
+        parcelas: asignacion.productor.parcelas.map((parcela) => ({
+          id: parcela.id,
+          nombre: parcela.descripcion,
+          tamaño: parcela.tamaño_parcela,
+        })),
+      },
+      tipo: asignacion.tipo,
+      estado: asignacion.estado,
+      fecha_create: asignacion.fecha_create,
+      fecha_update: asignacion.fecha_update,
+    }));
+
+    return {
+      tecnico: find_allAsignacion[0].user,
+      asignaciones,
+    };
   };
 
   FindOneAsignacionTP = async (id: number): Promise<AsignacionTPInterface> => {

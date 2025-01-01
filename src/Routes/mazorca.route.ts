@@ -23,6 +23,24 @@ Mazorca_route.get(
   }
 );
 
+Mazorca_route.get(
+  "/findallplanta",
+  authenticate,
+  authorizeRole(["ADMIN"]),
+  async (req, res) => {
+    try {
+      const response = await MazorcaCotrl.find_all_planta();
+      res.status(201).json(response);
+    } catch (error) {
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
+      console.log(error);
+    }
+  }
+);
+
 Mazorca_route.post(
   "/create",
   authenticate,

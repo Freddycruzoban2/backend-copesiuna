@@ -36,11 +36,20 @@ export class Parcela extends BaseEntity {
   @UpdateDateColumn()
   fecha_update!: Date;
 
+  @Column()
+  ID_productor!: number;
+
+  @Column()
+  ID_cultivo!: number;
+
+  @Column()
+  ID_tipo_parcela!: number;
+
   @ManyToOne(() => Productor, (productor) => productor.parcelas)
   @JoinColumn({ name: "ID_productor" })
   productor!: Productor;
 
-  @OneToOne(() => Cultivo, (cultivo) => cultivo.parcela)
+  @ManyToOne(() => Cultivo, (cultivo) => cultivo.parcela)
   @JoinColumn({ name: "ID_cultivo" }) 
   cultivo!: Cultivo; 
 

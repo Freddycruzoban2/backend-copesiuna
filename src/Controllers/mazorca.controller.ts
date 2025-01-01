@@ -14,6 +14,11 @@ export class MazorcaController {
     return new ApiResponse(result, "Datos de Mazorca retornados con Exito");
   };
 
+  find_all_planta = async (): Promise<ApiResponse<any>> => {
+    const result = await this.mazorcaService.findAllPlanta();
+    return new ApiResponse(result, "Datos de Mazorca retornados con Exito");
+  };
+
   create_one = async (data: CreateMazorca_dto) => {
     const result = await this.mazorcaService.createMazorca(data);
     return new ApiResponse(result, "Datos de Mazorca creada con Exito");

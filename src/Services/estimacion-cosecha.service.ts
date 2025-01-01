@@ -65,7 +65,7 @@ export class EstimacionCosechaService {
 
   findAllEstimacionCosecha = async () => {
     const all_estimacion_cosecha = await EstimacionCosecha.find({
-      relations: ["parcela"],
+      relations: ["parcela", "plantas", "plantas.mazorcas"],
     });
     if (all_estimacion_cosecha.length === 0) {
       throw new Error("No hay registros de Estimcion Cosecha Aun");

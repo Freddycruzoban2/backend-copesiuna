@@ -110,11 +110,19 @@ export class LoadDataService {
     ID_user: number,
     data: CreateBitacoraEstimacionCosechaDto
   ): Promise<any> => {
+    const newEstimacionCosecha = new EstimacionCosecha();
+
     try {
       const canProceed = await checkUserAssignments(ID_user);
       if (!canProceed) {
         throw new Error("No tiene Asignaciones de Productor");
       }
+
+      const asignaciones = await AsignacionTP.find({
+        where: {
+          ID_user: ID_user,
+        },
+      });
 
       const parcela = await Parcela.findOneBy({
         id: data.ID_parcela,
@@ -131,59 +139,84 @@ export class LoadDataService {
       }
 
       // Crear la Estimación de Cosecha
-      const newEstimacionCosecha = new EstimacionCosecha();
       newEstimacionCosecha.estado_clima = data.estadoClima;
       newEstimacionCosecha.fecha_create = data.fecha_created;
       newEstimacionCosecha.parcela = parcela;
       await newEstimacionCosecha.save();
 
-      // Preparar las plantas para bulk insert
-      const plantasToInsert = await Promise.all(
-        data.plantas.map(async (planta) => {
-          let afectacion = null;
-          if (planta.ID_afectacion) {
-            afectacion = await AfectacionMazorca.findOneBy({
-              id: planta.ID_afectacion,
-            });
-            // if (!afectacion) {
-            //   // Crear una nueva afectación si no se encuentra
-            //   afectacion = new AfectacionMazorca();
-            //   afectacion.estado = planta.estadoAfectacion; // Asume que tienes un campo estadoAfectacion en los datos
-            //   await afectacion.save();
-            // }
-          }
-          return {
-            num_planta: planta.numeroPlanta,
-            ID_afectacion: planta.ID_afectacion,
-            ID_parcela: parcela.id,
-            ID_estimacion: newEstimacionCosecha.id,
-          };
+      // // Preparar las plantas para bulk insert
+      // const plantasToInsert = await Promise.all(
+      //   data.plantas.map(async (planta) => {
+      //     let afectacion = null;
+      //     if (planta.ID_afectacion) {
+      //       afectacion = await AfectacionMazorca.findOneBy({
+      //         id: planta.ID_afectacion,
+      //       });
+      //       // if (!afectacion) {
+      //       //   // Crear una nueva afectación si no se encuentra
+      //       //   afectacion = new AfectacionMazorca();
+      //       //   afectacion.estado = planta.estadoAfectacion; // Asume que tienes un campo estadoAfectacion en los datos
+      //       //   await afectacion.save();
+      //       // }
+      //     }
+      //     return {
+      //       num_planta: planta.numeroPlanta,
+      //       ID_afectacion: planta.ID_afectacion,
+      //       ID_parcela: parcela.id,
+      //       ID_estimacion: newEstimacionCosecha.id,
+      //     };
+      //   })
+      // );
+
+      // const plantasResult = await Plantas.insert(plantasToInsert);
+
+      // // 3. Preparar las mazorcas para bulk insert
+      // const mazorcasToInsert: {
+      //   cantidad: number;
+      //   ID_Afectacion: number;
+      //   ID_planta: number;
+      // }[] = [];
+
+      // data.plantas.forEach((planta, index) => {
+      //   const idPlanta = plantasResult.identifiers[index].id; // Obtener el ID de la planta insertada
+      //   planta.mazorcas.forEach((mazorca) => {
+      //     mazorcasToInsert.push({
+      //       cantidad: mazorca.cantidad,
+      //       ID_Afectacion: mazorca.ID_afectacion,
+      //       ID_planta: idPlanta,
+      //     });
+      //   });
+      // });
+
+      data.plantas.map(async (data) => {
+        const plantaRegistro = new Plantas()
+        plantaRegistro.num_planta = data.numeroPlanta
+        plantaRegistro.ID_afectacion = data.ID_afectacion
+        plantaRegistro.ID_estimacion = newEstimacionCosecha.id,
+        plantaRegistro.ID_parcela = parcela.id
+        await plantaRegistro.save()
+        let mazorcaCantidad = data.mazorcas.map((data) => {
+          return data.cantidad
         })
-      );
+        let mazorcaAfectacion = data.mazorcas.map((data) => {
+          return data.ID_afectacion
+        })
 
-      const plantasResult = await Plantas.insert(plantasToInsert);
-
-      // 3. Preparar las mazorcas para bulk insert
-      const mazorcasToInsert: {
-        cantidad: number;
-        ID_Afectacion: number;
-        ID_planta: number;
-      }[] = [];
-
-      data.plantas.forEach((planta, index) => {
-        const idPlanta = plantasResult.identifiers[index].id; // Obtener el ID de la planta insertada
-        planta.mazorcas.forEach((mazorca) => {
-          mazorcasToInsert.push({
-            cantidad: mazorca.cantidad,
-            ID_Afectacion: mazorca.ID_afectacion,
-            ID_planta: idPlanta,
-          });
-        });
+        const mazoraRegistro = new Mazorca()
+        mazoraRegistro.cantidad = mazorcaCantidad[0]
+        mazoraRegistro.ID_afectacion = mazorcaAfectacion[0]
+        mazoraRegistro.ID_planta = plantaRegistro.id
+        await mazoraRegistro.save();
       });
 
-      if (mazorcasToInsert.length > 0) {
-        await Mazorca.insert(mazorcasToInsert);
-      }
+      // if (mazorcasToInsert.length > 0) {
+      //   await Mazorca.insert(mazorcasToInsert);
+      // }
+
+      await AsignacionTP.update(
+        { ID_productor: productor.id },
+        { estado: true }
+      );
 
       return {
         message:
@@ -191,6 +224,11 @@ export class LoadDataService {
       };
     } catch (error) {
       console.error(error);
+      // Eliminamos el registro de creado de Estimacion cosecha
+      await EstimacionCosecha.delete({
+        id: newEstimacionCosecha.id,
+      });
+      // Lanzamos un error con mensaje
       throw new Error(
         `Error al guardar la estimación de cosecha: "${(error as any).message}"`
       );

@@ -19,12 +19,10 @@ AsignacionTP_route.post(
       const response = await AsignacionCtrl.create_one(req.body);
       res.status(201).json(response);
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Internal Server Error",
-          error: (error as any).message,
-        });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -41,12 +39,10 @@ AsignacionTP_route.patch(
       const response = await AsignacionCtrl.update_one(id, req.body);
       res.status(201).json(response);
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Internal Server Error",
-          error: (error as any).message,
-        });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -62,12 +58,10 @@ AsignacionTP_route.delete(
       const response = await AsignacionCtrl.delete_one(id);
       res.status(201).json(response);
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Internal Server Error",
-          error: (error as any).message,
-        });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -76,18 +70,19 @@ AsignacionTP_route.delete(
 AsignacionTP_route.get(
   "/findall",
   authenticate,
-  authorizeRole(["ADMIN"]),
-  async (req, res) => {
+  authorizeRole(["ADMIN", "TECNICO"]),
+  async (req, res): Promise<any> => {
     try {
-      const response = await AsignacionCtrl.findall();
+      if (req.user?.id === undefined) {
+        return res.status(400).json({ message: "User ID is required" });
+      }
+      const response = await AsignacionCtrl.findall(req.user.id);
       res.status(201).json(response);
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Internal Server Error",
-          error: (error as any).message,
-        });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -102,12 +97,10 @@ AsignacionTP_route.get(
       const response = await AsignacionCtrl.find_one(req.body);
       res.status(201).json(response);
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Internal Server Error",
-          error: (error as any).message,
-        });
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }

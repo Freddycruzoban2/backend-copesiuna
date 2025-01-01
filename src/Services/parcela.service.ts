@@ -111,8 +111,8 @@ export class ParcelaService {
       });
 
       return all_parcelas;
-    } catch (error) {
-      return error;
+    } catch (error: any) {
+      throw new Error(`Error al Obtener datos ${error.message}`);
     }
   };
 
@@ -125,7 +125,6 @@ export class ParcelaService {
       await Parcela.delete({ id: id });
       return {
         parcela,
-        message: "parcela deleted",
       };
     } catch (error) {
       console.log("error", error);

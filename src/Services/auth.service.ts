@@ -186,187 +186,157 @@ export class AutenticacionService {
   };
 
   fillData = async () => {
-    // const afectacionMazorcaRepository =
-    //   AppDataSource.getRepository(AfectacionMazorca);
-    // const analisis_sueloRepository = AppDataSource.getRepository(AnalisisSuelo);
-    // const estimacion_cosechaRepository =
-    //   AppDataSource.getRepository(EstimacionCosecha);
-    // const AsignacionTPRepository = AppDataSource.getRepository(AsignacionTP);
-    // const cultivoRepository = AppDataSource.getRepository(Cultivo);
-    // const userRepository = AppDataSource.getRepository(User);
-    // const detalleAnalisisRepository =
-    //   AppDataSource.getRepository(DetalleAnalisisSuelo);
-    // const detalleEstimacionCosechaRepository = AppDataSource.getRepository(
-    //   DetalleEstimacionCosecha
-    // );
-    // const mazorcaRepository = AppDataSource.getRepository(Mazorca);
-    // const parcelaRepository = AppDataSource.getRepository(Parcela);
-    // const productorRepository = AppDataSource.getRepository(Productor);
-    // const propiedadesSueloRepository =
-    //   AppDataSource.getRepository(PropiedadesSuelo);
-    // const tipoparcelaRepository = AppDataSource.getRepository(TipoParcela);
-    // const plantasRepository = AppDataSource.getRepository(Plantas);
+    try {
+      const dataMazorcas = [
+        "monilla",
+        "phytophthora",
+        "ardillas",
+        "cuyú",
+        "pajaro",
+        "monos",
+      ];
+      const dataPlantas = [
+        "gallina ciega o tecorón",
+        "antracnosis",
+        "zompopo",
+        "comejen",
+        "chinche",
+        "mal de machete",
+        "gusano",
+        "hormiga",
+      ];
 
-    // // Eliminar datos existentes
-    // await mazorcaRepository.clear();
-    // await productorRepository.clear();
-    // await parcelaRepository.clear();
-    // await estimacion_cosechaRepository.clear();
-    // await afectacionMazorcaRepository.clear();
-    // await AsignacionTPRepository.clear();
-    // await analisis_sueloRepository.clear();
-    // await cultivoRepository.clear();
-    // await userRepository.clear();
-    // await detalleAnalisisRepository.clear();
-    // await detalleEstimacionCosechaRepository.clear();
-    // await propiedadesSueloRepository.clear();
-    // await tipoparcelaRepository.clear();
-    // await plantasRepository.clear();
-
-    const dataMazorcas = [
-      "monilla",
-      "phytophthora",
-      "ardillas",
-      "cuyú",
-      "pajaro",
-      "monos",
-    ];
-    const dataPlantas = [
-      "gallina ciega o tecorón",
-      "antracnosis",
-      "zompopo",
-      "comejen",
-      "chinche",
-      "mal de machete",
-      "gusano",
-      "hormiga",
-    ];
-    dataMazorcas.map(async (data) => {
-      await AfectacionMazorca.create({
-        nombre: data,
-        descripcion: "mazorcas",
+      dataMazorcas.map(async (data) => {
+        const afectacionMazorca = AfectacionMazorca.create({
+          nombre: data,
+          descripcion: "mazorcas",
+        });
+        await AfectacionMazorca.save(afectacionMazorca);
       });
-    });
 
-    dataPlantas.map(async (data) => {
-      await AfectacionMazorca.create({
-        nombre: data,
-        descripcion: "plantas",
+      dataPlantas.map(async (data) => {
+        const AfectacionPlanta = AfectacionMazorca.create({
+          nombre: data,
+          descripcion: "plantas",
+        });
+        await AfectacionMazorca.save(AfectacionPlanta);
       });
-    });
 
-    // Productor data seed
-    const productor_data = [
-      {
-        nombre: "Productor 1",
-        apellido: "Primero",
-        direccion: "Comunidad cerro negro",
-        cedula: "xxxx xxxx",
-      },
-      {
-        nombre: "Productor 2",
-        apellido: "Segundo",
-        direccion: "Comunidad cerro negro",
-        cedula: "xxxx xxxx",
-      },
-      {
-        nombre: "Productor 3",
-        apellido: "Tercero",
-        direccion: "Comunidad cerro negro",
-        cedula: "xxxx xxxx",
-      },
-      {
-        nombre: "Productor 4",
-        apellido: "Cuarto",
-        direccion: "Comunidad cerro negro",
-        cedula: "xxxx xxxx",
-      },
-    ];
-    await Productor.insert(productor_data);
+      // Productor data seed
+      const productor_data = [
+        {
+          nombre: "Productor 1",
+          apellido: "Primero",
+          direccion: "Comunidad cerro negro",
+          cedula: "xxxx xxxx",
+        },
+        {
+          nombre: "Productor 2",
+          apellido: "Segundo",
+          direccion: "Comunidad cerro negro",
+          cedula: "xxxx xxxx",
+        },
+        {
+          nombre: "Productor 3",
+          apellido: "Tercero",
+          direccion: "Comunidad cerro negro",
+          cedula: "xxxx xxxx",
+        },
+        {
+          nombre: "Productor 4",
+          apellido: "Cuarto",
+          direccion: "Comunidad cerro negro",
+          cedula: "xxxx xxxx",
+        },
+      ];
+      await Productor.insert(productor_data);
 
-    // Cultivo data seed
-    const cultivo_data = [
-      {
-        cultivo: "cacao",
-        edad: "2 meses",
-      },
-    ];
-    await Cultivo.insert(cultivo_data);
+      // Cultivo data seed
+      const cultivo_data = [
+        {
+          cultivo: "cacao",
+          edad: "2 meses",
+        },
+      ];
+      await Cultivo.insert(cultivo_data);
 
-    // Tipo Parcela data seed
-    const tipo_parcela_data = [
-      {
-        descripcion: "parcela abierta",
-      },
-      {
-        descripcion: "parcela cerrada",
-      },
-    ];
-    await TipoParcela.insert(tipo_parcela_data);
+      // Tipo Parcela data seed
+      const tipo_parcela_data = [
+        {
+          descripcion: "parcela abierta",
+        },
+        {
+          descripcion: "parcela cerrada",
+        },
+      ];
+      await TipoParcela.insert(tipo_parcela_data);
 
-    // Parcela data seed
-    const parcela_data = [
-      {
-        descripcion: "parcela de cacao",
-        tamaño_parcela: "2 mz",
-        ID_productor: 1,
-        ID_cultivo: 1,
-        ID_tipo_parcela: 1,
-      },
-      {
-        descripcion: "parcela de cacao",
-        tamaño_parcela: "2 mz",
-        ID_productor: 2,
-        ID_cultivo: 1,
-        ID_tipo_parcela: 1,
-      },
-      {
-        descripcion: "parcela de cacao",
-        tamaño_parcela: "2 mz",
-        ID_productor: 3,
-        ID_cultivo: 1,
-        ID_tipo_parcela: 1,
-      },
-      {
-        descripcion: "parcela de cacao",
-        tamaño_parcela: "2 mz",
-        ID_productor: 4,
-        ID_cultivo: 1,
-        ID_tipo_parcela: 1,
-      },
-    ];
-    await Parcela.insert(parcela_data);
+      // Parcela data seed
+      const parcela_data = [
+        {
+          descripcion: "parcela de cacao",
+          tamaño_parcela: "2 mz",
+          ID_productor: 1,
+          ID_cultivo: 1,
+          ID_tipo_parcela: 1,
+        },
+        {
+          descripcion: "parcela de cacao",
+          tamaño_parcela: "2 mz",
+          ID_productor: 2,
+          ID_cultivo: 1,
+          ID_tipo_parcela: 1,
+        },
+        {
+          descripcion: "parcela de cacao",
+          tamaño_parcela: "2 mz",
+          ID_productor: 3,
+          ID_cultivo: 1,
+          ID_tipo_parcela: 1,
+        },
+        {
+          descripcion: "parcela de cacao",
+          tamaño_parcela: "2 mz",
+          ID_productor: 4,
+          ID_cultivo: 1,
+          ID_tipo_parcela: 1,
+        },
+      ];
+      await Parcela.insert(parcela_data);
 
-    const password = await argon.hash("12345678");
-    // User data seed
-    const userdata = [
-      {
-        nombre: "Admin 1",
-        apellido: "Primero",
-        email: "admin@gmail.com",
-        role: Role.Admin,
-        password: await argon.hash("12345678"),
-      },
-      {
-        nombre: "Tecnico 1",
-        apellido: "Primero",
-        email: "tecnico@gmail.com",
-        role: Role.TECNICO,
-        password: password,
-      },
-    ];
-    await User.insert(userdata);
+      const password = await argon.hash("12345678");
+      // User data seed
+      const userdata = [
+        {
+          nombre: "Admin 1",
+          apellido: "Primero",
+          email: "admin@gmail.com",
+          role: Role.Admin,
+          password: await argon.hash("12345678"),
+        },
+        {
+          nombre: "Tecnico 1",
+          apellido: "Primero",
+          email: "tecnico@gmail.com",
+          role: Role.TECNICO,
+          password: password,
+        },
+      ];
+      await User.insert(userdata);
 
-    // Asignacion TP data seed
-    const asignacionTP_data = [
-      {
-        ID_productor: 1,
-        ID_user: 2,
-        tipo: TipoAsignacion.ESTIMACION_COSECHA,
-      },
-    ];
-    await AsignacionTP.insert(asignacionTP_data);
+      // Asignacion TP data seed
+      const asignacionTP_data = [
+        {
+          ID_productor: 1,
+          ID_user: 2,
+          tipo: TipoAsignacion.ESTIMACION_COSECHA,
+        },
+      ];
+      await AsignacionTP.insert(asignacionTP_data);
 
-    return { message: "Base de datos reseteada y rellenada con datos" };
+      return { message: "Base de datos reseteada y rellenada con datos" };
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
   };
 }

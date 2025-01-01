@@ -32,8 +32,8 @@ export class AsignacionTPController {
     return new ApiResponse(result, "Asignacion eliminada con Exito");
   };
 
-  findall = async (): Promise<ApiResponse<any>> => {
-    const result = await this.service.FindAllAsignacionTP();
+  findall = async (id: number): Promise<ApiResponse<any>> => {
+    const result = await this.service.FindAllAsignacionTP(id);
     return new ApiResponse(result, "Datos de Asignaciones retornados con Exito");
   };
 
