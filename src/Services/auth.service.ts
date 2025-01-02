@@ -99,19 +99,20 @@ export class AutenticacionService {
       // devuelve un token al user
       const token = await this.signToken(user.id, user.email, user.role);
       if(user.role === Role.TECNICO){
-      const imprensidible = await AfectacionMazorca.find();
+      const imprensindibleData = await AfectacionMazorca.find();
       const asignaciones = await checkUserAssignments(user.id);
       if (!asignaciones) {
         //throw new Error("No tiene Asignaciones de Productor");
         return {
           Usuario: user,
           Access_token: token,
+          imprensindibleData,
           asignaciones: null,
         };
       }
      const find_allAsignacion = await AsignacionTP.find({
       where: { ID_user: user.id },
-      relations: ["productor", "productor.parcelas", "user"],
+      relations: ["productor", "productor.parcelas", "productor.parcelas.tipo"],
     });
 
     const asig = find_allAsignacion.map((asignacion) => ({
@@ -126,6 +127,7 @@ export class AutenticacionService {
           id: parcela.id,
           nombre: parcela.descripcion,
           tamaño: parcela.tamaño_parcela,
+          tipo: parcela.tipo
         })),
       },
       tipo: asignacion.tipo,
@@ -134,7 +136,7 @@ export class AutenticacionService {
     return {
       Usuario: user,
       Access_token: token,
-      imprensidible,
+      imprensindibleData,
       asignaciones: asig,
     };
   }
