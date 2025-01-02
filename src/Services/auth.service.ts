@@ -98,48 +98,54 @@ export class AutenticacionService {
     try {
       // devuelve un token al user
       const token = await this.signToken(user.id, user.email, user.role);
-      if(user.role === Role.TECNICO){
-      const imprensindibleData = await AfectacionMazorca.find();
-      const asignaciones = await checkUserAssignments(user.id);
-      if (!asignaciones) {
-        //throw new Error("No tiene Asignaciones de Productor");
+      if (user.role === Role.TECNICO) {
+        const imprensindibleData = await AfectacionMazorca.find();
+        const asignaciones = await checkUserAssignments(user.id);
+        if (!asignaciones) {
+          //throw new Error("No tiene Asignaciones de Productor");
+          return {
+            Usuario: user,
+            Access_token: token,
+            imprensindibleData,
+            asignaciones: null,
+          };
+        }
+        const find_allAsignacion = await AsignacionTP.find({
+          where: { ID_user: user.id },
+          relations: [
+            "productor",
+            "productor.parcelas",
+            "productor.parcelas.tipo",
+            "productor.parcelas.cultivo",
+          ],
+        });
+
+        const asig = find_allAsignacion.map((asignacion) => ({
+          id: asignacion.id,
+          productor: {
+            id: asignacion.productor.id,
+            nombre: asignacion.productor.nombre,
+            apellido: asignacion.productor.apellido,
+            direccion: asignacion.productor.direccion,
+            cedula: asignacion.productor.cedula,
+            parcelas: asignacion.productor.parcelas.map((parcela) => ({
+              id: parcela.id,
+              nombre: parcela.descripcion,
+              tamaño: parcela.tamaño_parcela,
+              cultivo: parcela.cultivo.cultivo,
+              tipo: parcela.tipo,
+            })),
+          },
+          tipo: asignacion.tipo,
+        }));
+
         return {
           Usuario: user,
           Access_token: token,
           imprensindibleData,
-          asignaciones: null,
+          asignaciones: asig,
         };
       }
-     const find_allAsignacion = await AsignacionTP.find({
-      where: { ID_user: user.id },
-      relations: ["productor", "productor.parcelas", "productor.parcelas.tipo"],
-    });
-
-    const asig = find_allAsignacion.map((asignacion) => ({
-      id: asignacion.id,
-      productor: {
-        id: asignacion.productor.id,
-        nombre: asignacion.productor.nombre,
-        apellido: asignacion.productor.apellido,
-        direccion: asignacion.productor.direccion,
-        cedula: asignacion.productor.cedula,
-        parcelas: asignacion.productor.parcelas.map((parcela) => ({
-          id: parcela.id,
-          nombre: parcela.descripcion,
-          tamaño: parcela.tamaño_parcela,
-          tipo: parcela.tipo
-        })),
-      },
-      tipo: asignacion.tipo,
-    }));
-
-    return {
-      Usuario: user,
-      Access_token: token,
-      imprensindibleData,
-      asignaciones: asig,
-    };
-  }
       return {
         Usuario: user,
         Access_token: token,
