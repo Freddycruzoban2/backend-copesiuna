@@ -63,6 +63,17 @@ export class AnalisisSueloService {
     return all_analisis_suelo;
   };
 
+  findOneAnalisisSuelo = async (id: number) => {
+    const analisis_suelo = await AnalisisSuelo.findOne({
+      where: { id: id },
+      relations: ["productor", "propiedades"],
+    });
+    if (!analisis_suelo) {
+      throw new Error(`No se encontraron datos de Analisis de suelo`);
+    }
+    return analisis_suelo;
+  };
+
   deleteAnalisisSuelo = async (id: number) => {
     try {
       const analisis_suelo = await AnalisisSuelo.findOne({ where: { id: id } });

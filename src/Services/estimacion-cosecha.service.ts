@@ -73,6 +73,17 @@ export class EstimacionCosechaService {
     return all_estimacion_cosecha;
   };
 
+  findOneEstimacionCosecha = async (id: number) => {
+    const estimacion_cosecha = await EstimacionCosecha.findOne({
+      where: { id: id },
+      relations: ["parcela", "plantas", "plantas.mazorcas"],
+    });
+    if (!estimacion_cosecha) {
+      throw new Error("No existe datos de Estimacion Cosecha");
+    }
+    return estimacion_cosecha;
+  };
+
   deleteEstimacionCosecha = async (id: number) => {
     try {
       const estimacion_cosecha = await EstimacionCosecha.findOne({

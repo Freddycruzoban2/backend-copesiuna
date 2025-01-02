@@ -21,6 +21,15 @@ export class EstimacionCosechaController {
     );
   };
 
+  find_one = async (id: number): Promise<ApiResponse<any>> => {
+    const result =
+      await this.estimacionCosechaService.findOneEstimacionCosecha(id);
+    return new ApiResponse(
+      result,
+      "datos de Estimacion Cosecha retornados con Exito"
+    );
+  };
+
   create_one = async (
     data: CreateEstimacionCosecha_dto
   ): Promise<ApiResponse<any>> => {

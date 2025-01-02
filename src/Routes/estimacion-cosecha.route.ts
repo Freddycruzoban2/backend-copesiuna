@@ -26,6 +26,25 @@ EstimacionCosecha_route.get(
   }
 );
 
+EstimacionCosecha_route.get(
+  "/find/:id",
+  authenticate,
+  authorizeRole(["ADMIN"]),
+  async (req, res) => {
+    try {
+      const id = Number(req.params.id);
+      const response = await EstimacionCosechaCotrl.find_one(id);
+      res.status(201).json(response);
+    } catch (error) {
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
+      console.log(error);
+    }
+  }
+);
+
 EstimacionCosecha_route.post(
   "/create",
   authenticate,

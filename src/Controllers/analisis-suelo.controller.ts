@@ -20,6 +20,14 @@ export class AnalisisSueloController {
     );
   };
 
+  find_one = async (id: number): Promise<ApiResponse<any>> => {
+    const result = await this.analisisSueloService.findOneAnalisisSuelo(id);
+    return new ApiResponse(
+      result,
+      "datos de Analisis de Suelo retornados con Exito"
+    );
+  };
+
   create_one = async (
     data: CreateAnalisisSuelo_dto
   ): Promise<ApiResponse<any>> => {
