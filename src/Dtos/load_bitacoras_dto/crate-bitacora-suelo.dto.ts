@@ -44,6 +44,10 @@ export class CreateBitacoraSuelo_dto {
   id!: number | null;
 
   @IsString()
+  @IsOptional()
+  descripcion!: string;
+
+  @IsString()
   @IsNotEmpty()
   tectura!: string;
 

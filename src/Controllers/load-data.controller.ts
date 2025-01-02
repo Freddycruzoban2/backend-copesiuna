@@ -17,7 +17,7 @@ export class LoadDataController {
     input: CreateBitacoraSuelo_dto
   ): Promise<ApiResponse<any>> => {
     const result = await this.service.CreateBitacoraSuelo(ID_user, input);
-    return result;
+    return result; 
   };
 
   CreateBitacoraCosecha = async (

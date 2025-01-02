@@ -27,6 +27,7 @@ import { CreateCultivo_dto } from "../Dtos/cultivo_dto";
 import { Role } from "../common/enum/role.enum";
 import { TipoAsignacion } from "../common/enum/tipo-asignacion.role";
 import { AppDataSource } from "../db";
+import { checkUserAssignments } from "../helpers";
 
 export class AutenticacionService {
   signup = async (
@@ -76,7 +77,9 @@ export class AutenticacionService {
 
   signin = async (
     data: LoginUser_dto
-  ): Promise<{ Access_token: string; Usuario: User } | { message: string }> => {
+  ): Promise<
+    { Access_token: string; Usuario: User } | { message: string } | any
+  > => {
     const user = await User.findOne({
       where: {
         email: data.email,
@@ -95,6 +98,46 @@ export class AutenticacionService {
     try {
       // devuelve un token al user
       const token = await this.signToken(user.id, user.email, user.role);
+      if(user.role === Role.TECNICO){
+      const imprensidible = await AfectacionMazorca.find();
+      const asignaciones = await checkUserAssignments(user.id);
+      if (!asignaciones) {
+        //throw new Error("No tiene Asignaciones de Productor");
+        return {
+          Usuario: user,
+          Access_token: token,
+          asignaciones: null,
+        };
+      }
+     const find_allAsignacion = await AsignacionTP.find({
+      where: { ID_user: user.id },
+      relations: ["productor", "productor.parcelas", "user"],
+    });
+
+    const asig = find_allAsignacion.map((asignacion) => ({
+      id: asignacion.id,
+      productor: {
+        id: asignacion.productor.id,
+        nombre: asignacion.productor.nombre,
+        apellido: asignacion.productor.apellido,
+        direccion: asignacion.productor.direccion,
+        cedula: asignacion.productor.cedula,
+        parcelas: asignacion.productor.parcelas.map((parcela) => ({
+          id: parcela.id,
+          nombre: parcela.descripcion,
+          tamaño: parcela.tamaño_parcela,
+        })),
+      },
+      tipo: asignacion.tipo,
+    }));
+
+    return {
+      Usuario: user,
+      Access_token: token,
+      imprensidible,
+      asignaciones: asig,
+    };
+  }
       return {
         Usuario: user,
         Access_token: token,
@@ -206,10 +249,25 @@ export class AutenticacionService {
         "hormiga",
       ];
 
+      // const propiedadesSuelo = [
+      //   "tectura",
+      //   "color",
+      //   "ph",
+      //   "nitrogen",
+      //   "potassium",
+      //   "aluminum",
+      //   "calcium",
+      //   "ferric_iron",
+      //   "humus",
+      //   "magnecium",
+      //   "nitrite_nitrogeno",
+      //   "sulfate",
+      // ];
+
       dataMazorcas.map(async (data) => {
         const afectacionMazorca = AfectacionMazorca.create({
           nombre: data,
-          descripcion: "mazorcas",
+          descripcion: "mazorca",
         });
         await AfectacionMazorca.save(afectacionMazorca);
       });
@@ -217,10 +275,18 @@ export class AutenticacionService {
       dataPlantas.map(async (data) => {
         const AfectacionPlanta = AfectacionMazorca.create({
           nombre: data,
-          descripcion: "plantas",
+          descripcion: "planta",
         });
         await AfectacionMazorca.save(AfectacionPlanta);
       });
+
+      // propiedadesSuelo.map(async (data) => {
+      //   const propiedades = PropiedadesSuelo.create({
+      //     nombre: data,
+      //     dato: "propiedad",
+      //   });
+      //   await PropiedadesSuelo.save(propiedades);
+      // });
 
       // Productor data seed
       const productor_data = [
@@ -330,6 +396,11 @@ export class AutenticacionService {
           ID_productor: 1,
           ID_user: 2,
           tipo: TipoAsignacion.ESTIMACION_COSECHA,
+        },
+        {
+          ID_productor: 2,
+          ID_user: 2,
+          tipo: TipoAsignacion.ANALISIS_FISICO_CLINICO,
         },
       ];
       await AsignacionTP.insert(asignacionTP_data);

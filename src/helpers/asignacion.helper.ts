@@ -14,10 +14,10 @@ export const checkUserAssignments = async (
     return false;
   }
 
-  // Verificar si todas las asignaciones tienen el estado false
-  const allAssignmentsIncomplete = asignaciones.every(
+  // Verificar si al menos una asignación tiene el estado false
+  const atLeastOneAssignmentIncomplete = asignaciones.some(
     (asignacion) => asignacion.estado === false
   );
 
-  return allAssignmentsIncomplete;
+  return atLeastOneAssignmentIncomplete;
 };

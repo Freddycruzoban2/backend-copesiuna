@@ -22,10 +22,11 @@ export class LoadDataService {
     ID_user: number,
     data: CreateBitacoraSuelo_dto
   ): Promise<any> => {
-    const hasAssignments = await checkUserAssignments(ID_user);
-    if (!hasAssignments) {
-      throw new Error("No tiene asignaciones de Productor");
-    }
+    const newAnalisisSuelo = new AnalisisSuelo();
+    const canProceed = await checkUserAssignments(ID_user);
+      if (!canProceed) {
+        throw new Error("No tiene Asignaciones de Productor");
+      }
     const propiedades = [
       { nombre: "tectura", dato: data.tectura },
       { nombre: "color", dato: data.color },
@@ -46,13 +47,15 @@ export class LoadDataService {
     if (!productor) {
       throw new Error("El productor no existe");
     }
+    
 
     try {
       // Crear nuevo análisis de suelo
-      const newAnalisisSuelo = new AnalisisSuelo();
       newAnalisisSuelo.productor = productor;
       newAnalisisSuelo.fecha_levantamiento = data.fecha_levantamiento;
       newAnalisisSuelo.fecha_e_laboratorio = data.fecha_laboratorio;
+      newAnalisisSuelo.descripcion = data.descripcion || "Descripción por defecto"; // Proporcionar un valor por defecto si no se proporciona uno
+
       await newAnalisisSuelo.save();
 
       // Crear propiedades de suelo
@@ -100,8 +103,11 @@ export class LoadDataService {
         mensaje: "Bitacora de suelo Cargada",
       };
     } catch (error) {
+      await AnalisisSuelo.delete({
+        id: newAnalisisSuelo.id,
+      });
       throw new Error(
-        `Error al crear la bitácora de suelo: ${(error as any).message}`
+        `Error al crear la bitácora Analiis de suelo: ${(error as any).message}`
       );
     }
   };

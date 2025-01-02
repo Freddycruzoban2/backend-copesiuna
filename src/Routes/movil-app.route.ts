@@ -16,11 +16,11 @@ LoadMovilData_route.post(
   validateDto(CreateBitacoraSuelo_dto),
   async (req, res): Promise<any> => {
     try {
-      const userId = req.user?.id;
-      if (userId === undefined) {
+      const ID_user = req.user?.id;
+      if (!ID_user) {
         return res.status(400).json({ message: "User ID is missing" });
       }
-      const response = await controller.CreateBitacoraSuelo(userId, req.body);
+      const response = await controller.CreateBitacoraSuelo(ID_user, req.body);
       res.status(201).json(response);
     } catch (error) {
       res.status(500).json({
