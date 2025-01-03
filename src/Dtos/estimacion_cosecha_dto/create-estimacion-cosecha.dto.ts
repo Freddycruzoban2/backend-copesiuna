@@ -1,5 +1,13 @@
-import { IsDate, IsNotEmpty, IsNumber, IsOptional, IsString, Length, MinLength } from "class-validator";
-import { AnalisisSuelo, EstimacionCosecha} from "../../entities";
+import {
+  IsDate,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Length,
+  MinLength,
+} from "class-validator";
+import { AnalisisSuelo, EstimacionCosecha } from "../../entities";
 import { Transform } from "class-transformer";
 
 export class CreateEstimacionCosecha_dto extends EstimacionCosecha {
@@ -22,4 +30,3 @@ export class CreateEstimacionCosecha_dto extends EstimacionCosecha {
   @Length(3, 40)
   descripcion!: string;
 }
-
