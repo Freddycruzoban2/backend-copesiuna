@@ -100,18 +100,8 @@ export class AutenticacionService {
       const token = await this.signToken(user.id, user.email, user.role);
       if (user.role === Role.TECNICO) {
         const imprensindibleData = await AfectacionMazorca.find();
-        const asignaciones = await checkUserAssignments(user.id);
-        if (!asignaciones) {
-          //throw new Error("No tiene Asignaciones de Productor");
-          return {
-            Usuario: user,
-            Access_token: token,
-            imprensindibleData,
-            asignaciones: null,
-          };
-        }
-        const find_allAsignacion = await AsignacionTP.find({
-          where: { ID_user: user.id },
+        const find_all_asignaciones = await AsignacionTP.find({
+          where: { ID_user: user.id, estado: false },
           relations: [
             "productor",
             "productor.parcelas",
@@ -120,7 +110,17 @@ export class AutenticacionService {
           ],
         });
 
-        const asig = find_allAsignacion.map((asignacion) => ({
+        if (find_all_asignaciones.length === 0) {
+          //throw new Error("No tiene Asignaciones de Productor");
+          return {
+            Usuario: user,
+            Access_token: token,
+            imprensindibleData,
+            asignaciones: null,
+          };
+        }
+
+        const asig = find_all_asignaciones.map((asignacion) => ({
           id: asignacion.id,
           productor: {
             id: asignacion.productor.id,

@@ -6,6 +6,7 @@ import {
   IsNotEmpty,
   IsString,
   IsDate,
+  IsArray,
 } from "class-validator";
 
 export class CreateBitacoraEstimacionCosechaDto {
@@ -38,7 +39,8 @@ export class PlantaDto {
 
   @IsOptional()
   @IsNumber()
-  ID_afectacion!: number;
+  @IsArray()
+  ID_afectacion!: number[];
 
   @IsOptional()
   @Type(() => MazorcaDto)
@@ -46,9 +48,10 @@ export class PlantaDto {
 }
 
 export class MazorcaDto {
+  @IsOptional()
   @IsNumber()
-  @IsNotEmpty()
-  ID_afectacion!: number; // "sana", "monilia", etc.
+  @IsArray()
+  ID_afectacion!: number[];
 
   @IsNumber()
   @IsOptional()

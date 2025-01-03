@@ -73,6 +73,7 @@ export class AnalisisSueloService {
     }
     return analisis_suelo;
   };
+  
 
   deleteAnalisisSuelo = async (id: number) => {
     try {

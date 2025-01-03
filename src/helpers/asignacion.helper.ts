@@ -1,12 +1,16 @@
 import { AsignacionTP } from "../entities/asignacion-productorTecnico.entity";
 import { AppDataSource } from "../db";
+import { TipoAsignacion } from "../common/enum/tipo-asignacion.role";
 
 export const checkUserAssignments = async (
-  userId: number
+  userId: number,
+  asignacion?: TipoAsignacion
 ): Promise<boolean> => {
   const asignacionTPRepository = AppDataSource.getRepository(AsignacionTP);
   const asignaciones = await asignacionTPRepository.find({
-    where: { ID_user: userId },
+    where: { ID_user: userId,
+      tipo: asignacion
+    },
   });
 
   // Verificar si existen asignaciones
