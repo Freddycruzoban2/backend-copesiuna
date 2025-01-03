@@ -17,8 +17,13 @@ DetalleEstimacionCosecha_route.get(
       const id = Number(req.params.id);
       const response = await DetalleEstimacionCosechaCotrl.find_all();
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error: (error as any).message });
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
       console.log(error);
     }
   }
@@ -33,8 +38,13 @@ DetalleEstimacionCosecha_route.post(
     try {
       const response = await DetalleEstimacionCosechaCotrl.create_one(req.body);
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error: (error as any).message });
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
       console.log(error);
     }
   }
@@ -49,8 +59,13 @@ DetalleEstimacionCosecha_route.delete(
       const id = Number(req.params.id);
       const response = await DetalleEstimacionCosechaCotrl.delete_one(id);
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error: (error as any).message });
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
       console.log(error);
     }
   }
@@ -69,8 +84,13 @@ DetalleEstimacionCosecha_route.patch(
         req.body
       );
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error: (error as any).message });
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
       console.log(error);
     }
   }

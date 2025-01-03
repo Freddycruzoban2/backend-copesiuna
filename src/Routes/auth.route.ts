@@ -13,9 +13,9 @@ Auth_route.post(
     try {
       const response = await AuthCtrlo.signup(req.body);
       res.status(201).json(response);
-    } catch (error) {
+    } catch (error: any) {
       res
-        .status(500)
+        .status(error.statusCode)
         .json({
           message: "Internal Server Error",
           error: (error as any).message,
@@ -33,9 +33,9 @@ Auth_route.post(
     try {
       const response = await AuthCtrlo.signin(req.body);
       res.status(201).json(response);
-    } catch (error) {
+    } catch (error: any) {
       res
-        .status(500)
+        .status(error.statusCode)
         .json({
           message: "Internal Server Error",
           error: (error as any).message,
@@ -52,9 +52,9 @@ Auth_route.get(
     try {
       const response = await AuthCtrlo.resetAndFillData();
       res.status(201).json(response);
-    } catch (error) {
+    } catch (error: any) {
       res
-        .status(500)
+        .status(error.statusCode)
         .json({
           message: "Internal Server Error",
           error: (error as any).message,

@@ -14,12 +14,15 @@ Parcela_route.get(
     try {
       const response = await ParcelaCotrl.find_all();
       res.status(200).json(response);
-    } catch (error) {
-      res.status(500).json({
-        message: "Internal Server Error",
-        error: (error as any).message,
-      });
-      console.log(error);    }
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
+      console.log(error);
+    }
   }
 );
 
@@ -32,12 +35,15 @@ Parcela_route.post(
     try {
       const response = await ParcelaCotrl.create_one(req.body);
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({
-        message: "Internal Server Error",
-        error: (error as any).message,
-      });
-      console.log(error);    }
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
+      console.log(error);
+    }
   }
 );
 
@@ -50,11 +56,13 @@ Parcela_route.delete(
       const id = Number(req.params.id);
       const response = await ParcelaCotrl.delete_one(id);
       res.status(200).json(response);
-    } catch (error) {
-      res.status(500).json({
-        message: "Internal Server Error",
-        error: (error as any).message,
-      });
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
       console.log(error);
     }
   }
@@ -70,11 +78,13 @@ Parcela_route.patch(
       const id = Number(req.params.id);
       const response = await ParcelaCotrl.update_one(id, req.body);
       res.status(200).json(response);
-    } catch (error) {
-      res.status(500).json({
-        message: "Internal Server Error",
-        error: (error as any).message,
-      });
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
       console.log(error);
     }
   }

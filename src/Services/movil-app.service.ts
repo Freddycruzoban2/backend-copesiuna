@@ -17,6 +17,11 @@ import {
 } from "../Dtos/load_bitacoras_dto";
 import { checkUserAssignments } from "../helpers";
 import { TipoAsignacion } from "../common/enum/tipo-asignacion.role";
+import {
+  BadRequestException,
+  CustomException,
+  NotFoundException,
+} from "../common/utils";
 
 export class LoadDataService {
   CreateBitacoraSuelo = async (
@@ -24,15 +29,6 @@ export class LoadDataService {
     data: CreateBitacoraSuelo_dto
   ): Promise<any> => {
     const newAnalisisSuelo = new AnalisisSuelo();
-    const canProceed = await checkUserAssignments(
-      ID_user,
-      TipoAsignacion.ANALISIS_FISICO_CLINICO
-    );
-    if (!canProceed) {
-      throw new Error(
-        `No tiene Asignaciones de tipo: "${TipoAsignacion.ANALISIS_FISICO_CLINICO}"`
-      );
-    }
     const propiedades = [
       { nombre: "tectura", dato: data.tectura },
       { nombre: "color", dato: data.color },
@@ -47,11 +43,20 @@ export class LoadDataService {
       { nombre: "nitrite_nitrogeno", dato: data.nitrite_nitrogeno },
       { nombre: "sulfate", dato: data.sulfate },
     ];
+    const canProceed = await checkUserAssignments(
+      ID_user,
+      TipoAsignacion.ANALISIS_FISICO_CLINICO
+    );
+    if (!canProceed) {
+      throw new BadRequestException(
+        `No tiene Asignaciones de tipo: "${TipoAsignacion.ANALISIS_FISICO_CLINICO}"`
+      );
+    }
 
     // Buscar el productor
     const productor = await Productor.findOneBy({ id: data.productor_id });
     if (!productor) {
-      throw new Error("El productor no existe");
+      throw new NotFoundException("El productor no existe");
     }
 
     try {
@@ -126,37 +131,36 @@ export class LoadDataService {
   ): Promise<any> => {
     const newEstimacionCosecha = new EstimacionCosecha();
 
-    try {
-      const canProceed = await checkUserAssignments(
-        ID_user,
-        TipoAsignacion.ESTIMACION_COSECHA
+    const canProceed = await checkUserAssignments(
+      ID_user,
+      TipoAsignacion.ESTIMACION_COSECHA
+    );
+    if (!canProceed) {
+      throw new BadRequestException(
+        `No tiene Asignaciones de tipo: ${TipoAsignacion.ESTIMACION_COSECHA}`
       );
-      if (!canProceed) {
-        throw new Error(
-          `No tiene Asignaciones de tipo: ${TipoAsignacion.ESTIMACION_COSECHA}`
-        );
-      }
+    }
 
-      const asignaciones = await AsignacionTP.find({
-        where: {
-          ID_user: ID_user,
-        },
-      });
+    const asignaciones = await AsignacionTP.find({
+      where: {
+        ID_user: ID_user,
+      },
+    });
 
-      const parcela = await Parcela.findOneBy({
-        id: data.ID_parcela,
-      });
-      if (!parcela) {
-        throw new Error("Parcela data not found");
-      }
+    const parcela = await Parcela.findOneBy({
+      id: data.ID_parcela,
+    });
+    if (!parcela) {
+      throw new NotFoundException("Parcela data not found");
+    }
 
-      const productor = await Productor.findOneBy({
-        id: data.ID_productor,
-      });
-      if (!productor) {
-        throw new Error("Productor data not found");
-      }
-
+    const productor = await Productor.findOneBy({
+      id: data.ID_productor,
+    });
+    if (!productor) {
+      throw new NotFoundException("Productor data not found");
+    }
+    try {
       // Crear la Estimación de Cosecha
       newEstimacionCosecha.estado_clima = data.estadoClima;
       newEstimacionCosecha.fecha_create = data.fecha_created;
@@ -209,12 +213,13 @@ export class LoadDataService {
         message:
           "Estimación de cosecha guardada exitosamente con plantas y mazorcas",
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       // Eliminamos el registro de creado de Estimacion cosecha
       await EstimacionCosecha.delete({
         id: newEstimacionCosecha.id,
       });
+
       // Lanzamos un error con mensaje
       throw new Error(
         `Error al guardar la estimación de cosecha: "${(error as any).message}"`

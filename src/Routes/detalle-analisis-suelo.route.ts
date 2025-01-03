@@ -16,8 +16,13 @@ DetalleAnalisisSuelo_route.get(
     try {
       const response = await DetalleAnalisisSueloCotrl.find_all();
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error: (error as any).message });
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
       console.log(error);
     }
   }
@@ -32,8 +37,13 @@ DetalleAnalisisSuelo_route.post(
     try {
       const response = await DetalleAnalisisSueloCotrl.create_one(req.body);
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error: (error as any).message });
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
       console.log(error);
     }
   }
@@ -48,8 +58,13 @@ DetalleAnalisisSuelo_route.delete(
       const id = Number(req.params.id);
       const response = await DetalleAnalisisSueloCotrl.delete_one(id);
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error: (error as any).message });
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
       console.log(error);
     }
   }
@@ -65,8 +80,13 @@ DetalleAnalisisSuelo_route.patch(
       const id = Number(req.params.id);
       const response = await DetalleAnalisisSueloCotrl.update_one(id, req.body);
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error: (error as any).message });
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
       console.log(error);
     }
   }

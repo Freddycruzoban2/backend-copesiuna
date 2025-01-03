@@ -18,11 +18,13 @@ AsignacionTP_route.post(
     try {
       const response = await AsignacionCtrl.create_one(req.body);
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({
-        message: "Internal Server Error",
-        error: (error as any).message,
-      });
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
       console.log(error);
     }
   }
@@ -38,8 +40,8 @@ AsignacionTP_route.patch(
       const id = Number(req.params.id);
       const response = await AsignacionCtrl.update_one(id, req.body);
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({
+    } catch (error: any) {
+      res.status(error.statusCode).json({
         message: "Internal Server Error",
         error: (error as any).message,
       });
@@ -57,8 +59,8 @@ AsignacionTP_route.delete(
       const id = Number(req.params.id);
       const response = await AsignacionCtrl.delete_one(id);
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({
+    } catch (error: any) {
+      res.status(error.statusCode).json({
         message: "Internal Server Error",
         error: (error as any).message,
       });
@@ -78,8 +80,8 @@ AsignacionTP_route.get(
       }
       const response = await AsignacionCtrl.findall(req.user.id);
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({
+    } catch (error: any) {
+      res.status(error.statusCode).json({
         message: "Internal Server Error",
         error: (error as any).message,
       });
@@ -96,8 +98,8 @@ AsignacionTP_route.get(
     try {
       const response = await AsignacionCtrl.find_one(req.body);
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({
+    } catch (error: any) {
+      res.status(error.statusCode).json({
         message: "Internal Server Error",
         error: (error as any).message,
       });

@@ -16,11 +16,17 @@ AfectacionesMazorca_route.get(
     try {
       const response = await AfectacionesMazorcaCotrl.find_all();
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error: (error as any).message });
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
       console.log(error);
     }
-  });
+  }
+);
 
 AfectacionesMazorca_route.post(
   "/create",
@@ -31,11 +37,17 @@ AfectacionesMazorca_route.post(
     try {
       const response = await AfectacionesMazorcaCotrl.create_one(req.body);
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error: (error as any).message });
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
       console.log(error);
     }
-  });
+  }
+);
 
 AfectacionesMazorca_route.delete(
   "/delete/:id",
@@ -46,11 +58,17 @@ AfectacionesMazorca_route.delete(
       const id = Number(req.params.id);
       const response = await AfectacionesMazorcaCotrl.delete_one(id);
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error: (error as any).message });
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
       console.log(error);
     }
-  });
+  }
+);
 
 AfectacionesMazorca_route.patch(
   "/update/:id",
@@ -62,8 +80,14 @@ AfectacionesMazorca_route.patch(
       const id = Number(req.params.id);
       const response = await AfectacionesMazorcaCotrl.update_one(id, req.body);
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({ message: "Internal Server Error", error: (error as any).message });
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
       console.log(error);
     }
-  });
+  }
+);

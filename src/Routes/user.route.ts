@@ -14,11 +14,13 @@ user_route.post(
     try {
       const response = await UserCtrl.create_one(req.body);
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({
-        message: "Internal Server Error",
-        error: (error as any).message,
-      });
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
       console.log(error);
     }
   }
@@ -32,11 +34,13 @@ user_route.get(
     try {
       const response = await UserCtrl.find_all();
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({
-        message: "Internal Server Error",
-        error: (error as any).message,
-      });
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
       console.log(error);
     }
   }
@@ -51,11 +55,13 @@ user_route.delete(
       const id = Number(req.params.id);
       const response = await UserCtrl.delete_one(id);
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({
-        message: "Internal Server Error",
-        error: (error as any).message,
-      });
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
       console.log(error);
     }
   }
@@ -71,11 +77,13 @@ user_route.patch(
       const id = Number(req.params.id);
       const response = await UserCtrl.update_one(id, req.body);
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({
-        message: "Internal Server Error",
-        error: (error as any).message,
-      });
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
       console.log(error);
     }
   }

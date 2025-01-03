@@ -22,8 +22,8 @@ LoadMovilData_route.post(
       }
       const response = await controller.CreateBitacoraSuelo(ID_user, req.body);
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({
+    } catch (error: any) {
+      res.status(error.statusCode).json({
         message: "Internal Server Error",
         error: (error as any).message,
       });
@@ -48,8 +48,8 @@ LoadMovilData_route.post(
         req.body
       );
       res.status(201).json(response);
-    } catch (error) {
-      res.status(500).json({
+    } catch (error: any) {
+      res.status(error.statusCode).json({
         message: "Internal Server Error",
         error: (error as any).message,
       });
