@@ -7,19 +7,20 @@ import {
 } from "../entities";
 import { MazorcaInterface } from "../interfaces";
 import { CreateMazorca_dto, UpdateMazorca_dto } from "../Dtos/mazorca_dto";
+import { NotFoundException } from "../common/utils";
 
 export class MazorcaService {
   createMazorca = async (data: CreateMazorca_dto) => {
-    try {
-      const planta = await Plantas.findOneBy({
-        id: data.id_planta,
-      });
-      if (!planta) {
-        throw new Error(
-          `La planta con id '${data.id_planta}' no existe o no han sido añadidas`
-        );
-      }
+    const planta = await Plantas.findOneBy({
+      id: data.id_planta,
+    });
+    if (!planta) {
+      throw new NotFoundException(
+        `La planta con id '${data.id_planta}' no existe o no han sido añadidas`
+      );
+    }
 
+    try {
       const new_mazorca = new Mazorca();
       new_mazorca.cantidad = data.cantidad;
       new_mazorca.ID_afectacion = data.id_afectacion;
@@ -32,17 +33,20 @@ export class MazorcaService {
   };
 
   updateMazorca = async (id: number, data: UpdateMazorca_dto) => {
+    const mazorca = await Mazorca.findOne({ where: { id: id } });
+    if (!mazorca) {
+      throw new NotFoundException(
+        "Las Mazorca a actualizar no existe o no han sido añadidas"
+      );
+    }
+
     try {
-      const mazorca = await Mazorca.findOne({ where: { id: id } });
-      if (!mazorca) {
-        return "Las Mazorca a actualizar no existe o no han sido añadidas";
-      }
       const mazorcaUpdated = await Mazorca.update(id, { ...data });
       return {
         message: "Mazorca datos actualizado",
         mazorcaUpdated,
       };
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(
         `Error al actualizar Mazorca: '${(error as any).message}'`
       );
@@ -54,7 +58,7 @@ export class MazorcaService {
       relations: ["afectacion", "planta"],
     });
     if (all_mazorca.length === 0) {
-      throw new Error(`No hay registros de mazorca aun`);
+      throw new NotFoundException(`No hay registros de mazorca aun`);
     }
     return all_mazorca;
   };
@@ -64,17 +68,18 @@ export class MazorcaService {
       relations: ["afectacion", "estimacion"],
     });
     if (all_mazorca.length === 0) {
-      throw new Error(`No hay registros de mazorca aun`);
+      throw new NotFoundException(`No hay registros de mazorca aun`);
     }
     return all_mazorca;
   };
 
   deleteMazorca = async (id: number) => {
+    const mazorca = await Mazorca.findOne({ where: { id: id } });
+    if (!mazorca) {
+      throw new NotFoundException(`Mazorca data not found`);
+    }
+
     try {
-      const mazorca = await Mazorca.findOne({ where: { id: id } });
-      if (!mazorca) {
-        throw new Error(`Mazorca data not found`);
-      }
       await Mazorca.delete({ id: id });
       return {
         mazorca,

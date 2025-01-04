@@ -5,6 +5,7 @@ import {
   CreateTipoParcela_dto,
   UpdateTipoParcela_dto,
 } from "../Dtos/tipo_parcela_dto";
+import { NotFoundException } from "../common/utils";
 
 export class TipoParcelaService {
   createTipoParcela = async (data: CreateTipoParcela_dto) => {
@@ -18,49 +19,53 @@ export class TipoParcelaService {
         fecha_create: new_Tipo_parcela.fecha_create,
         fecha_update: new_Tipo_parcela.fecha_update,
       };
-    } catch (error) {
-      return { message: "Error al crear el Tipo de Parcela", error: error };
+    } catch (error: any) {
+      throw new Error(`Error al crear Tipo Parcela: "${error.message}"`);
     }
   };
 
   updateTipoParcela = async (id: number, data: UpdateTipoParcela_dto) => {
+    const tipo_parcela = await TipoParcela.findOne({ where: { id: id } });
+    if (!tipo_parcela) {
+      throw new NotFoundException("Tipo de Parcela no encontrado");
+    }
+
     try {
-      const tipo_parcela = await TipoParcela.findOne({ where: { id: id } });
-      if (!tipo_parcela) {
-        throw new Error("Tipo de Parcela no encontrado");
-      }
       const tipo_parcela_updated = await TipoParcela.update(id, { ...data });
 
       return {
         tipo_parcela_updated,
       };
-    } catch (error) {
-      `Error al actualizar Tipo de Parcela", error: ${(error as any).message}`;
+    } catch (error: any) {
+      throw new Error(`Error al actualizar Tipo Parcela: "${error.message}"`);
     }
   };
 
   findAllTipoParcela = async () => {
     const all_Tipo_parcelas = await TipoParcela.find();
     if (!all_Tipo_parcelas || all_Tipo_parcelas.length === 0) {
-      throw new Error("No hay registros de Tipos de Parcela creados...");
+      throw new NotFoundException(
+        "No hay registros de Tipos de Parcela creados..."
+      );
     }
     return all_Tipo_parcelas;
   };
 
   deleteTipoParcela = async (id: number) => {
+    const tipo_parcela = await TipoParcela.findOne({ where: { id: id } });
+    if (!tipo_parcela) {
+      throw new NotFoundException("Tipo de Parcela no encontrado");
+    }
+
     try {
-      const tipo_parcela = await TipoParcela.findOne({ where: { id: id } });
-      if (!tipo_parcela) {
-        throw new Error("Tipo de Parcela no encontrado");
-      }
       await TipoParcela.delete({ id: id });
       return {
         tipo_parcela,
       };
-    } catch (error) {
+    } catch (error: any) {
       console.log("error", error);
       throw new Error(
-        `Error deleting Tipo de Parcela", error: ${(error as any).message}`
+        `Error eliminando Tipo de Parcela", error: ${(error as any).message}`
       );
     }
   };

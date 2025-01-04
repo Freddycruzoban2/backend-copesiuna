@@ -28,6 +28,7 @@ import { Role } from "../common/enum/role.enum";
 import { TipoAsignacion } from "../common/enum/tipo-asignacion.role";
 import { AppDataSource } from "../db";
 import { checkUserAssignments } from "../helpers";
+import { BadRequestException, NotFoundException } from "../common/utils";
 
 export class AutenticacionService {
   signup = async (
@@ -85,15 +86,12 @@ export class AutenticacionService {
         email: data.email,
       },
     });
-
     // si no existe retorna un error
-    if (!user) throw new Error("Email is incorrect or doesn't exist");
-
+    if (!user) throw new NotFoundException("Email is incorrect or doesn't exist");
     // comparar las contraseñas
     const pwMatches = await argon.verify(user.password, data.password);
-
     // si no son iguales, retorna un error
-    if (!pwMatches) throw new Error("Incorrect password");
+    if (!pwMatches) throw new BadRequestException("Incorrect password");
 
     try {
       // devuelve un token al user
@@ -150,7 +148,7 @@ export class AutenticacionService {
         Usuario: user,
         Access_token: token,
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error al crear respuesta:", error);
       throw new Error("Error al crear respuesta de token");
     }

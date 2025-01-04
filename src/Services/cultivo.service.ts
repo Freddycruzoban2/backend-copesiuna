@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Cultivo, Parcela } from "../entities";
 import { CultivoInterface } from "../interfaces";
 import { CreateCultivo_dto, UpdateCultivo_dto } from "../Dtos/cultivo_dto";
+import { NotFoundException } from "../common/utils";
 
 export class CultivoService {
   createCultivo = async (data: CreateCultivo_dto): Promise<any> => {
@@ -26,11 +27,12 @@ export class CultivoService {
   };
 
   updateCultivo = async (id: number, data: UpdateCultivo_dto) => {
+    const cultivo = await Cultivo.findOne({ where: { id: id } });
+    if (!cultivo) {
+      throw new NotFoundException(`Cultivo no encontrado`);
+    }
+
     try {
-      const cultivo = await Cultivo.findOne({ where: { id: id } });
-      if (!cultivo) {
-        throw new Error(`Cultivo no encontrado`);
-      }
       // Actualizar el cultivo en la base de datos
       await Cultivo.update(id, { ...data });
 
@@ -48,17 +50,17 @@ export class CultivoService {
   findAllCultivo = async (): Promise<Cultivo[] | { message: string }> => {
     const all_cultivos = await Cultivo.find();
     if (all_cultivos.length === 0) {
-      throw new Error(`No hay Cultivos registrados`);
+      throw new NotFoundException(`No hay Cultivos registrados`);
     }
     return all_cultivos;
   };
 
   deleteCultivo = async (id: number) => {
+    const cultivo = await Cultivo.findOne({ where: { id: id } });
+    if (!cultivo) {
+      throw new NotFoundException(`Cultivo no encontrado`);
+    }
     try {
-      const cultivo = await Cultivo.findOne({ where: { id: id } });
-      if (!cultivo) {
-        throw new Error(`Cultivo no encontrado`);
-      }
       await Cultivo.delete({ id: id });
       return {
         cultivo,

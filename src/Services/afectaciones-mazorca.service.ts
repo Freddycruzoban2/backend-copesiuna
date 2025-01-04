@@ -5,6 +5,7 @@ import {
   CreateAfectacionesMazorca_dto,
   UpdateAfectacionesMazorca_dto,
 } from "../Dtos/afectaciones_mazorca_dto";
+import { NotFoundException } from "../common/utils";
 
 export class AfectacionesMazorcaService {
   createAfectacionesMazorca = async (
@@ -28,13 +29,13 @@ export class AfectacionesMazorcaService {
     id: number,
     data: UpdateAfectacionesMazorca_dto
   ): Promise<any> => {
+    const afectaciones_mazorca = await AfectacionMazorca.findOne({
+      where: { id: id },
+    });
+    if (!afectaciones_mazorca) {
+      throw new NotFoundException(`Afectacion mazorca no encontrada`);
+    }
     try {
-      const afectaciones_mazorca = await AfectacionMazorca.findOne({
-        where: { id: id },
-      });
-      if (!afectaciones_mazorca) {
-        throw new Error(`Afectacion mazorca no encontrada`);
-      }
       const afectaciones_mazorcaUpdated = await AfectacionMazorca.update(id, {
         ...data,
       });
@@ -43,7 +44,9 @@ export class AfectacionesMazorcaService {
         afectaciones_mazorcaUpdated,
       };
     } catch (error: any) {
-      throw new Error(`Error al actualizar Afectaciones Mazorca: ${error.message}`);
+      throw new Error(
+        `Error al actualizar Afectaciones Mazorca: ${error.message}`
+      );
     }
   };
 
@@ -52,27 +55,28 @@ export class AfectacionesMazorcaService {
   > => {
     const all_afectaciones_mazorca = await AfectacionMazorca.find();
     if (all_afectaciones_mazorca.length === 0) {
-      throw new Error(`No hay Afectaciones de Mazorca registrados`);
+      throw new NotFoundException(`No hay Afectaciones de Mazorca registrados`);
     }
     return all_afectaciones_mazorca;
   };
 
   deleteAfectacionesMazorca = async (id: number): Promise<any> => {
+    const afectaciones_mazorca = await AfectacionMazorca.findOne({
+      where: { id: id },
+    });
+    if (!afectaciones_mazorca) {
+      throw new NotFoundException(`Datos de Afectaciones de Mazorca no encontrados`);
+    }
     try {
-      const afectaciones_mazorca = await AfectacionMazorca.findOne({
-        where: { id: id },
-      });
-      if (!afectaciones_mazorca) {
-        throw new Error(`Datos de Afectaciones de Mazorca no encontrados`);
-      }
       await AfectacionMazorca.delete({ id: id });
       return {
         afectaciones_mazorca,
       };
     } catch (error: any) {
       console.log("error", error);
-      throw new Error(`Error al eliminar Afectaciones de Mazorca: ${error.message}`);
-
+      throw new Error(
+        `Error al eliminar Afectaciones de Mazorca: ${error.message}`
+      );
     }
   };
 }

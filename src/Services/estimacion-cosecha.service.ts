@@ -14,25 +14,29 @@ import {
   CreateEstimacionCosecha_dto,
   UpdateEstimacionCosecha_dto,
 } from "../Dtos/estimacion_cosecha_dto";
+import { BadRequestException, NotFoundException } from "../common/utils";
+import { Not } from "typeorm";
 
 export class EstimacionCosechaService {
   createEstimacionCosecha = async (data: CreateEstimacionCosecha_dto) => {
-    try {
-      const parcela = await Parcela.findOne({
-        where: { id: data.id_parcela },
-      });
-      if (!parcela) {
-        return { message: "datos de Productor no encontrados" };
-      }
+    const parcela = await Parcela.findOne({
+      where: { id: data.id_parcela },
+    });
+    if (!parcela) {
+      throw new NotFoundException("datos de Productor no encontrados");
+    }
 
+    try {
       const new_estimacion_cosecha = new EstimacionCosecha();
       new_estimacion_cosecha.estado_clima = data.estado_clima;
       new_estimacion_cosecha.parcela = parcela;
       await new_estimacion_cosecha.save();
 
       return new_estimacion_cosecha;
-    } catch (error) {
-      return { message: "Error al crear Estimacion Cosecha", error: error };
+    } catch (error: any) {
+      throw new BadRequestException(
+        `Error al crear Estimacion Cosecha: ${error.message}`
+      );
     }
   };
 
@@ -40,14 +44,14 @@ export class EstimacionCosechaService {
     id: number,
     data: UpdateEstimacionCosecha_dto
   ) => {
-    try {
-      const estimacion_cosecha = await EstimacionCosecha.findOne({
-        where: { id: id },
-      });
-      if (!estimacion_cosecha) {
-        return { message: "datos de Estimacion Cosecha no encontrados" };
-      }
+    const estimacion_cosecha = await EstimacionCosecha.findOne({
+      where: { id: id },
+    });
+    if (!estimacion_cosecha) {
+      throw new NotFoundException("datos de Estimacion Cosecha no encontrados");
+    }
 
+    try {
       const estimacion_cosechaUpdated = await EstimacionCosecha.update(id, {
         ...data,
       });
@@ -68,7 +72,7 @@ export class EstimacionCosechaService {
       relations: ["parcela", "plantas", "plantas.mazorcas"],
     });
     if (all_estimacion_cosecha.length === 0) {
-      throw new Error("No hay registros de Estimcion Cosecha Aun");
+      throw new NotFoundException("No hay registros de Estimcion Cosecha Aun");
     }
     return all_estimacion_cosecha;
   };
@@ -79,19 +83,20 @@ export class EstimacionCosechaService {
       relations: ["parcela", "plantas", "plantas.mazorcas"],
     });
     if (!estimacion_cosecha) {
-      throw new Error("No existe datos de Estimacion Cosecha");
+      throw new NotFoundException("No existe datos de Estimacion Cosecha");
     }
     return estimacion_cosecha;
   };
 
   deleteEstimacionCosecha = async (id: number) => {
+    const estimacion_cosecha = await EstimacionCosecha.findOne({
+      where: { id: id },
+    });
+    if (!estimacion_cosecha) {
+      throw new NotFoundException("Estimacion Cosecha data not found");
+    }
+
     try {
-      const estimacion_cosecha = await EstimacionCosecha.findOne({
-        where: { id: id },
-      });
-      if (!estimacion_cosecha) {
-        throw new Error("Estimacion Cosecha data not found");
-      }
       await EstimacionCosecha.delete({ id: id });
       return {
         estimacion_cosecha,

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Productor } from "../entities";
 import { ProductorInterface } from "../interfaces";
-import { ProductorDataRetorn } from "../common/utils";
+import { NotFoundException, ProductorDataRetorn } from "../common/utils";
 import {
   CreateProductor_dto,
   UpdateProductor_dto,
@@ -19,8 +19,8 @@ export class ProductorService {
       newProductor.cedula = data.cedula;
       await newProductor.save();
       return newProductor;
-    } catch (error) {
-      return { message: "Error al actualizar el productor", error };
+    } catch (error: any) {
+      throw new Error(`Error al crear Productor ${error.message}`);
     }
   };
 
@@ -28,25 +28,26 @@ export class ProductorService {
     id: number,
     data: UpdateProductor_dto
   ): Promise<any> => {
+    const productorFind = await Productor.findOne({ where: { id: id } });
+    if (!productorFind) {
+      throw new NotFoundException("Productor data not found");
+    }
+
     try {
-      const productorFind = await Productor.findOne({ where: { id: id } });
-      if (!productorFind) {
-        return { message: "Productor no encontrado" };
-      }
       const productorUpdated = await Productor.update(id, { ...data });
       return {
         message: "Productor actualizado",
         productorUpdated,
       };
-    } catch (error) {
-      return { message: "Error al actualizar el productor", error };
+    } catch (error: any) {
+      throw new Error(`Error al actualizar Productor: "${error.message}"`);
     }
   };
 
   findAllProductores = async (): Promise<Productor[] | { message: string }> => {
     const all_productores = await Productor.find();
     if (all_productores.length === 0) {
-      return { message: "No hay Productores registrados" };
+      throw new NotFoundException("Productor data not found");
     }
     return all_productores;
   };
@@ -54,19 +55,20 @@ export class ProductorService {
   deleteProductor = async (
     id: number
   ): Promise<Productor | ProductorDataRetorn> => {
+    const productor = await Productor.findOne({ where: { id: id } });
+    if (!productor) {
+      throw new NotFoundException("Productor data not found");
+    }
+
     try {
-      const productor = await Productor.findOne({ where: { id: id } });
-      if (!productor) {
-        return { message: "Productor not found" };
-      }
       await Productor.delete({ id: id });
       return {
         message: "Productor deleted",
         productor,
       };
-    } catch (error) {
+    } catch (error: any) {
       console.log("error", error);
-      return { message: "Error deleting user", error: error };
+      throw new Error(`Error al eliminar Productor: "${error.message}"`);
     }
   };
 }

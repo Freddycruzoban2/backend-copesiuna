@@ -3,6 +3,7 @@ import { User } from "../entities";
 import { UserInterface } from "../interfaces";
 import { CreateUser_dto, UpdateUser_Dto } from "../Dtos/user_dto";
 import { ApiResponse } from "../common/types/response/api-response";
+import { NotFoundException } from "../common/utils";
 
 export class UserService {
   createUser = async (data: CreateUser_dto): Promise<any> => {
@@ -15,21 +16,19 @@ export class UserService {
       new_user.telefono = data.telefono;
       await new_user.save();
       return new_user;
-    } catch (error) {
+    } catch (error: any) {
       console.log("error", error);
-      return {
-        message: "Error al crear usuario",
-        error: (error as any).message,
-      };
+      throw new Error(`Error al crear Usuario: "${(error as any).message}"`);
     }
   };
 
   updateUser = async (id: number, data: UpdateUser_Dto) => {
+    const user = await User.findOne({ where: { id: id } });
+    if (!user) {
+      throw new NotFoundException("Usuario data not found");
+    }
+
     try {
-      const user = await User.findOne({ where: { id: id } });
-      if (!user) {
-        return { message: "User no encontrado" };
-      }
       await User.update(id, { ...data });
 
       const userUpdated = await User.findOne({ where: { id: id } });
@@ -38,34 +37,35 @@ export class UserService {
         message: "User actualizado",
         userUpdated,
       };
-    } catch (error) {
+    } catch (error: any) {
       console.log("error", error);
-      throw new Error(`Error al actualizar el Usuario: ${(error as any).message}`);
+      throw new Error(`Error al actualizar el Usuario: ${error.message}`);
     }
   };
 
   findAll = async () => {
     const all_Usuarios = await User.find();
     if (all_Usuarios.length === 0) {
-      return { message: "No hay Usuarios registrados" };
+      throw new NotFoundException("No hay Usuario registrados");
     }
     return all_Usuarios;
   };
 
   deleteUser = async (id: number) => {
+    const user = await User.findOne({ where: { id: id } });
+    if (!user) {
+      throw new NotFoundException("Usuario data not found");
+    }
+
     try {
-      const user = await User.findOne({ where: { id: id } });
-      if (!user) {
-        return { message: "User not found" };
-      }
       await User.delete({ id: id });
       return {
         user,
         message: "Usuario deleted",
       };
-    } catch (error) {
+    } catch (error: any) {
       console.log("error", error);
-      return { message: "Error deleting User", error: error };
+      throw new Error(`Error al eliminar el Usuario: ${error.message}`);
     }
   };
 }

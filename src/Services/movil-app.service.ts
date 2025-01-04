@@ -194,7 +194,7 @@ export class LoadDataService {
               id: afec,
             });
             if (!afectacion) {
-              throw new Error("Afectacion data not found");
+              throw new NotFoundException("Afectacion data not found");
             }
             mazorcaRegistro.ID_afectacion = afectacion.id;
           }

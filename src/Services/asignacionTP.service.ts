@@ -13,6 +13,7 @@ import {
 } from "../Dtos/asignacionTP_dto";
 import { Role } from "../common/enum/role.enum";
 import { AsignacionTPInterface } from "../interfaces";
+import { NotFoundException } from "../common/utils";
 
 export class AsignacionTPService {
   CreateAsignacionTP = async (
@@ -122,8 +123,9 @@ export class AsignacionTPService {
       relations: ["productor", "productor.parcelas", "user"],
     });
     if (find_allAsignacion.length === 0) {
-      throw new Error("No tiene Asignaciones aun...");
+      throw new NotFoundException("No tiene Asignaciones aun...");
     }
+
     const asignaciones = find_allAsignacion.map((asignacion) => ({
       id: asignacion.id,
       productor: {
@@ -156,7 +158,7 @@ export class AsignacionTPService {
       id: id,
     });
     if (!find_oneAsignacion) {
-      throw new Error("No existe esa asignacion...");
+      throw new NotFoundException("No existe esa asignacion...");
     }
     return find_oneAsignacion;
   };

@@ -8,17 +8,18 @@ import {
   CreateAnalisisSuelo_dto,
   UpdateAnalisisSuelo_dto,
 } from "../Dtos/analisis_suelo_dto";
+import { NotFoundException } from "../common/utils";
 
 export class AnalisisSueloService {
   createAnalisisSuelo = async (data: CreateAnalisisSuelo_dto) => {
-    try {
-      const productor = await Productor.findOne({
-        where: { id: data.id_productor },
-      });
-      if (!productor) {
-        throw new Error(`Productor no encontrado`);
-      }
+    const productor = await Productor.findOne({
+      where: { id: data.id_productor },
+    });
+    if (!productor) {
+      throw new NotFoundException(`Productor no encontrado`);
+    }
 
+    try {
       const new_analisis_suelo = new AnalisisSuelo();
       new_analisis_suelo.productor = productor;
       new_analisis_suelo.fecha_levantamiento = data.fecha_levantamiento;
@@ -35,12 +36,12 @@ export class AnalisisSueloService {
   };
 
   UpdateAnalisisSuelo = async (id: number, data: UpdateAnalisisSuelo_dto) => {
-    try {
-      const analisis_suelo = await AnalisisSuelo.findOne({ where: { id: id } });
-      if (!analisis_suelo) {
-        throw new Error(`Datos de Analisis de Suelo no encontrados`);
-      }
+    const analisis_suelo = await AnalisisSuelo.findOne({ where: { id: id } });
+    if (!analisis_suelo) {
+      throw new NotFoundException(`Datos de Analisis de Suelo no encontrados`);
+    }
 
+    try {
       const analisis_sueloUpdated = await AnalisisSuelo.update(id, { ...data });
 
       return {
@@ -58,7 +59,7 @@ export class AnalisisSueloService {
       relations: ["productor", "propiedades"],
     });
     if (all_analisis_suelo.length === 0) {
-      throw new Error(`No hay registros de Analisis de suelo aun`);
+      throw new NotFoundException(`No hay registros de Analisis de suelo aun`);
     }
     return all_analisis_suelo;
   };
@@ -69,18 +70,20 @@ export class AnalisisSueloService {
       relations: ["productor", "propiedades"],
     });
     if (!analisis_suelo) {
-      throw new Error(`No se encontraron datos de Analisis de suelo`);
+      throw new NotFoundException(
+        `No se encontraron datos de Analisis de suelo`
+      );
     }
     return analisis_suelo;
   };
-  
 
   deleteAnalisisSuelo = async (id: number) => {
+    const analisis_suelo = await AnalisisSuelo.findOne({ where: { id: id } });
+    if (!analisis_suelo) {
+      throw new NotFoundException(`Datos de Analisis suelo no encontrados`);
+    }
+
     try {
-      const analisis_suelo = await AnalisisSuelo.findOne({ where: { id: id } });
-      if (!analisis_suelo) {
-        throw new Error(`Datos de Analisis suelo no encontrados`);
-      }
       await AnalisisSuelo.delete({ id: id });
       return {
         analisis_suelo,
