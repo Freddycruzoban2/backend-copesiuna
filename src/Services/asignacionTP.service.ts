@@ -116,7 +116,7 @@ export class AsignacionTPService {
     return deleteAsignacion;
   };
 
-  FindAllAsignacionTP = async (id: number): Promise<any> => {
+  FindAllMeAsignacionTP = async (id: number): Promise<any> => {
     // Buscar asignaciones existentes
     const find_allAsignacion = await AsignacionTP.find({
       where: { ID_user: id },
@@ -147,18 +147,54 @@ export class AsignacionTPService {
     }));
 
     return {
-      tecnico: find_allAsignacion[0].user,
       asignaciones,
     };
   };
 
-  FindOneAsignacionTP = async (id: number): Promise<AsignacionTPInterface> => {
+  FindAllAsignacionTP = async (): Promise<any> => {
     // Buscar asignaciones existentes
-    const find_oneAsignacion = await AsignacionTP.findOneBy({
-      id: id,
+    const find_allAsignacion = await AsignacionTP.find({
+      relations: ["productor", "productor.parcelas", "user"],
     });
-    if (!find_oneAsignacion) {
-      throw new NotFoundException("No existe esa asignacion...");
+    if (find_allAsignacion.length === 0) {
+      throw new NotFoundException("No hay registros de  Asignaciones aun...");
+    }
+
+    const asignaciones = find_allAsignacion.map((asignacion) => ({
+      id: asignacion.id,
+      tecnico: asignacion.user,
+      productor: {
+        id: asignacion.productor.id,
+        nombre: asignacion.productor.nombre,
+        apellido: asignacion.productor.apellido,
+        direccion: asignacion.productor.direccion,
+        cedula: asignacion.productor.cedula,
+        parcelas: asignacion.productor.parcelas.map((parcela) => ({
+          id: parcela.id,
+          nombre: parcela.descripcion,
+          tamaño: parcela.tamaño_parcela,
+        })),
+      },
+      tipo: asignacion.tipo,
+      estado: asignacion.estado,
+      fecha_create: asignacion.fecha_create,
+      fecha_update: asignacion.fecha_update,
+    }));
+
+    return {
+      asignaciones,
+    };
+  };
+
+  FindOneAsignacionTP = async (id: number): Promise<AsignacionTPInterface[]> => {
+    // Buscar asignaciones existentes
+    const find_oneAsignacion = await AsignacionTP.find({
+      where: {
+        ID_user: id
+      }
+    });
+    if (find_oneAsignacion.length === 0) {
+      throw new NotFoundException("No hay asignaciones a ese Tecnico...");
     }
     return find_oneAsignacion;
   };

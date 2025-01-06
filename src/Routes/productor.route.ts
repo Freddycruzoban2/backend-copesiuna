@@ -26,6 +26,26 @@ Productor_route.get(
   }
 );
 
+Productor_route.get(
+  "/findallasig",
+  authenticate,
+  authorizeRole(["ADMIN"]),
+  async (req, res) => {
+    try {
+      const response = await ProductorCotrl.find_all_asigned();
+      res.status(201).json(response);
+    } catch (error: any) {
+      res
+        .status(error.statusCode)
+        .json({
+          message: "Internal Server Error",
+          error: (error as any).message,
+        });
+      console.log(error);
+    }
+  }
+);
+
 Productor_route.post(
   "/create",
   authenticate,

@@ -18,6 +18,11 @@ export class ProductorController {
     return new ApiResponse(result, "Datos de Productores retornados con exito");
   };
 
+  find_all_asigned = async (): Promise<ApiResponse<any>> => {
+    const result = await this.productorService.findAllProductoresAsigned();
+    return new ApiResponse(result, "Datos de Productores retornados con exito");
+  };
+
   create_one = async (data: CreateProductor_dto) => {
     const result = await this.productorService.create_productor(data);
     return new ApiResponse(result, "Datos de Productor creado con exito");

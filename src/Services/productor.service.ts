@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Productor } from "../entities";
+import { AsignacionTP, Productor } from "../entities";
 import { ProductorInterface } from "../interfaces";
 import { NotFoundException, ProductorDataRetorn } from "../common/utils";
 import {
@@ -50,6 +50,23 @@ export class ProductorService {
       throw new NotFoundException("Productor data not found");
     }
     return all_productores;
+  };
+
+  findAllProductoresAsigned = async (): Promise<
+    Productor[] | { message: string }
+  > => {
+    const asignaciones = await AsignacionTP.find();
+
+    const productores_return = [];
+    for (let data of asignaciones) {
+      const productores = await Productor.findOneBy({
+        id: data.ID_productor,
+      });
+      if (productores) {
+        productores_return.push(productores);
+      }
+    }
+    return productores_return;
   };
 
   deleteProductor = async (
