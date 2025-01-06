@@ -13,7 +13,7 @@ import {
 } from "../Dtos/asignacionTP_dto";
 import { Role } from "../common/enum/role.enum";
 import { AsignacionTPInterface } from "../interfaces";
-import { NotFoundException } from "../common/utils";
+import { BadRequestException, NotFoundException } from "../common/utils";
 
 export class AsignacionTPService {
   CreateAsignacionTP = async (
@@ -22,14 +22,14 @@ export class AsignacionTPService {
     // Buscar el productor
     const productor = await Productor.findOneBy({ id: data.ID_productor });
     if (!productor) {
-      throw new Error("El productor no existe");
+      throw new NotFoundException("El productor no existe");
     }
 
     const productorAsingned = await AsignacionTP.findOneBy({
       productor: { id: data.ID_productor },
     });
     if (productorAsingned) {
-      throw new Error("El productor ya esta asignado");
+      throw new BadRequestException("El productor ya esta asignado");
     }
 
     // Buscar el Tecnico
@@ -38,7 +38,7 @@ export class AsignacionTPService {
       role: Role.TECNICO,
     });
     if (!tecnico) {
-      throw new Error("El Tecnico no existe");
+      throw new NotFoundException("El Tecnico no existe");
     }
 
     try {
