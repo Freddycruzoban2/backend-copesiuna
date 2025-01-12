@@ -9,7 +9,7 @@
     "dev": "nodemon ./src/app.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "Freddy Cruz",
   "license": "ISC",
   "dependencies": {
     "@nestjs/mapped-types": "^2.0.6",

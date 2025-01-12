@@ -20,6 +20,13 @@ export class LoadDataController {
     return result; 
   };
 
+  DeleteBitacoraSuelo = async (
+    ID: number,
+  ): Promise<ApiResponse<any>> => {
+    const result = await this.service.DeleteBitacoraSuelo(ID);
+    return result; 
+  };
+
   CreateBitacoraCosecha = async (
     ID_user: number,
     input: CreateBitacoraEstimacionCosechaDto

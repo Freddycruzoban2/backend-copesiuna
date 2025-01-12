@@ -125,6 +125,17 @@ export class LoadDataService {
     }
   };
 
+  DeleteBitacoraSuelo = async (id : number): Promise<any> => {
+    const analisis = await AnalisisSuelo.findOneBy({id: id});
+    if (!analisis) {
+      throw new NotFoundException("Analisis de suelo no encontrado");
+    }
+    await AnalisisSuelo.delete({id: id});
+    return {
+      mensaje: "Analisis de suelo eliminado"
+    }
+  }
+
   CreateBitacoraCosecha = async (
     ID_user: number,
     data: CreateBitacoraEstimacionCosechaDto
