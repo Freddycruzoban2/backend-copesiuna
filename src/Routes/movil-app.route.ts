@@ -32,26 +32,6 @@ LoadMovilData_route.post(
   }
 );
 
-LoadMovilData_route.delete(
-  "/createsuelo/:id",
-  authenticate,
-  authorizeRole(["ADMIN", "TECNICO"]),
-  validateDto(CreateBitacoraSuelo_dto),
-  async (req, res): Promise<any> => {
-    try {
-      const ID = Number(req.params.id);
-      const response = await controller.DeleteBitacoraSuelo(id);
-      res.status(201).json(response);
-    } catch (error: any) {
-      res.status(error.statusCode).json({
-        message: "Internal Server Error",
-        error: (error as any).message,
-      });
-      console.log(error);
-    }
-  }
-);
-
 LoadMovilData_route.post(
   "/createcosecha",
   authenticate,

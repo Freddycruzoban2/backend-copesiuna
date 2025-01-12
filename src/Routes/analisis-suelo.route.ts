@@ -17,12 +17,10 @@ AnalisisSuelo_route.get(
       const response = await AnalisisSueloCotrl.find_all();
       res.status(201).json(response);
     } catch (error: any) {
-      res
-        .status(error.statusCode)
-        .json({
-          message: "Internal Server Error",
-          error: (error as any).message,
-        });
+      res.status(error.statusCode).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -38,12 +36,10 @@ AnalisisSuelo_route.get(
       const response = await AnalisisSueloCotrl.find_one(id);
       res.status(201).json(response);
     } catch (error: any) {
-      res
-        .status(error.statusCode)
-        .json({
-          message: "Internal Server Error",
-          error: (error as any).message,
-        });
+      res.status(error.statusCode).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -59,12 +55,10 @@ AnalisisSuelo_route.post(
       const response = await AnalisisSueloCotrl.create_one(req.body);
       res.status(201).json(response);
     } catch (error: any) {
-      res
-        .status(error.statusCode)
-        .json({
-          message: "Internal Server Error",
-          error: (error as any).message,
-        });
+      res.status(error.statusCode).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -80,12 +74,10 @@ AnalisisSuelo_route.delete(
       const response = await AnalisisSueloCotrl.delete_one(id);
       res.status(201).json(response);
     } catch (error: any) {
-      res
-        .status(error.statusCode)
-        .json({
-          message: "Internal Server Error",
-          error: (error as any).message,
-        });
+      res.status(error.statusCode).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
@@ -102,12 +94,10 @@ AnalisisSuelo_route.patch(
       const response = await AnalisisSueloCotrl.update_one(id, req.body);
       res.status(201).json(response);
     } catch (error: any) {
-      res
-        .status(error.statusCode)
-        .json({
-          message: "Internal Server Error",
-          error: (error as any).message,
-        });
+      res.status(error.statusCode).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
       console.log(error);
     }
   }
