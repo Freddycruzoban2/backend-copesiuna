@@ -20,9 +20,9 @@ export class CreateMazorca_dto extends Mazorca {
 
   @IsNotEmpty()
   @IsNumber()
-  id_afectacion!: number;
+  ID_afectacion!: number;
 
   @IsNotEmpty()
   @IsNumber()
-  id_planta!: number;
+  ID_planta!: number;
 }
