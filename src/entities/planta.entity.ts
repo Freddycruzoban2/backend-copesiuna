@@ -26,8 +26,8 @@ export class Plantas extends BaseEntity {
   @Column()
   num_planta!: number;
 
-  @Column()
-  ID_afectacion!: number;
+  // @Column()
+  // ID_afectacion!: number;
 
   @Column()
   ID_parcela!: number;
@@ -41,11 +41,20 @@ export class Plantas extends BaseEntity {
   @UpdateDateColumn()
   fecha_update!: Date;
 
-  @ManyToOne(() => AfectacionMazorca, (afectacion) => afectacion.plantas, {
-    onDelete: "CASCADE",
+  @ManyToMany(() => AfectacionMazorca, (afectacion) => afectacion.plantas)
+  //@JoinColumn({ name: "ID_afectacion" })
+  @JoinTable({
+    name: "planta_afectacion",
+    joinColumn: {
+      name: "planta_id",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "ID_afectacion",
+      referencedColumnName: "id",
+    },
   })
-  @JoinColumn({ name: "ID_afectacion" })
-  afectacion!: AfectacionMazorca;
+  afectaciones!: AfectacionMazorca[];
 
   @ManyToOne(() => EstimacionCosecha, (estimacion) => estimacion.plantas, {
     onDelete: "CASCADE",

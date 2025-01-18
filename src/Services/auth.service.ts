@@ -87,7 +87,8 @@ export class AutenticacionService {
       },
     });
     // si no existe retorna un error
-    if (!user) throw new NotFoundException("Email is incorrect or doesn't exist");
+    if (!user)
+      throw new NotFoundException("Email is incorrect or doesn't exist");
     // comparar las contraseñas
     const pwMatches = await argon.verify(user.password, data.password);
     // si no son iguales, retorna un error
@@ -270,21 +271,28 @@ export class AutenticacionService {
       //   "sulfate",
       // ];
 
-      dataMazorcas.map(async (data) => {
+      await AfectacionMazorca.create({
+        nombre: "sana",
+        descripcion: "limpia de malezas"
+      }).save();
+
+      // Guardar afectaciones de mazorcas
+      for (const data of dataMazorcas) {
         const afectacionMazorca = AfectacionMazorca.create({
           nombre: data,
           descripcion: "mazorca",
         });
         await AfectacionMazorca.save(afectacionMazorca);
-      });
+      }
 
-      dataPlantas.map(async (data) => {
-        const AfectacionPlanta = AfectacionMazorca.create({
+      // Guardar afectaciones de plantas
+      for (const data of dataPlantas) {
+        const afectacionPlanta = AfectacionMazorca.create({
           nombre: data,
           descripcion: "planta",
         });
-        await AfectacionMazorca.save(AfectacionPlanta);
-      });
+        await AfectacionMazorca.save(afectacionPlanta);
+      }
 
       // propiedadesSuelo.map(async (data) => {
       //   const propiedades = PropiedadesSuelo.create({

@@ -12,18 +12,18 @@ import { NotFoundException } from "../common/utils";
 export class MazorcaService {
   createMazorca = async (data: CreateMazorca_dto) => {
     const planta = await Plantas.findOneBy({
-      id: data.id_planta,
+      id: data.ID_planta,
     });
     if (!planta) {
       throw new NotFoundException(
-        `La planta con id '${data.id_planta}' no existe o no han sido añadidas`
+        `La planta con id '${data.ID_planta}' no existe o no han sido añadidas`
       );
     }
 
     try {
       const new_mazorca = new Mazorca();
       new_mazorca.cantidad = data.cantidad;
-      new_mazorca.ID_afectacion = data.id_afectacion;
+      new_mazorca.ID_afectacion = data.ID_afectacion;
       new_mazorca.planta = planta;
       await new_mazorca.save();
       return new_mazorca;

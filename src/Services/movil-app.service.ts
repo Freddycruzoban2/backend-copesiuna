@@ -168,35 +168,43 @@ export class LoadDataService {
       await newEstimacionCosecha.save();
 
       // Guardar plantas
-      for (const plantaData of data.plantas) {
+      for (let plantaData of data.plantas) {
         const plantaRegistro = new Plantas();
         plantaRegistro.num_planta = plantaData.numeroPlanta;
-        for (const afec of plantaData.ID_afectacion) {
-          const afectacion = await AfectacionMazorca.findOneBy({
-            id: afec,
-          });
-          if (!afectacion) {
-            throw new Error("Afectacion data not found");
+        plantaRegistro.parcela = parcela;
+        plantaRegistro.estimacion = newEstimacionCosecha;
+
+        // Guardar afectaciones de la planta
+        if (plantaData.ID_afectacion && plantaData.ID_afectacion.length > 0) {
+          plantaRegistro.afectaciones = [];
+          for (const afecId of plantaData.ID_afectacion) {
+            const afectacion = await AfectacionMazorca.findOneBy({
+              id: afecId,
+            });
+            if (!afectacion) {
+              throw new NotFoundException("Afectacion de Planta not found");
+            }
+            plantaRegistro.afectaciones.push(afectacion);
           }
-          console.log("Imprimiendo afectacion desde planta", afectacion);
-          plantaRegistro.ID_afectacion = afectacion.id;
         }
-        plantaRegistro.ID_estimacion = newEstimacionCosecha.id;
-        plantaRegistro.ID_parcela = parcela.id;
+
+        console.log("\n\nimprimiendo planta a guardar",plantaRegistro)
         await plantaRegistro.save();
+
 
         // Guardar mazorcas
         for (const mazorcaData of plantaData.mazorcas) {
           const mazorcaRegistro = new Mazorca();
           mazorcaRegistro.cantidad = mazorcaData.cantidad;
-          for (const afec of mazorcaData.ID_afectacion) {
+          // Guardar afectaciones de la mazorca
+          if (mazorcaData.ID_afectacion) {
             const afectacion = await AfectacionMazorca.findOneBy({
-              id: afec,
+              id: mazorcaData.ID_afectacion,
             });
             if (!afectacion) {
-              throw new NotFoundException("Afectacion data not found");
+              throw new NotFoundException("Afectacion de Mazorca not found");
             }
-            mazorcaRegistro.ID_afectacion = afectacion.id;
+            mazorcaRegistro.afectacion = afectacion;
           }
           mazorcaRegistro.ID_planta = plantaRegistro.id;
           await mazorcaRegistro.save();

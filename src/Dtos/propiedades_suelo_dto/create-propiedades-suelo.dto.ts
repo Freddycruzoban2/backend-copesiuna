@@ -10,7 +10,7 @@ export class CreatePropiedadesSuelo_dto extends PropiedadesSuelo {
 
   @IsString()
   @IsNotEmpty()
-  datos!: string;
+  dato!: string;
 
   @IsNumber()
   @IsNotEmpty()

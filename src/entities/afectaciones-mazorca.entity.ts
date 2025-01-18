@@ -36,7 +36,7 @@ export class AfectacionMazorca extends BaseEntity {
   })
   mazorcas!: Mazorca[];
 
-  @OneToMany(() => Plantas, (planta) => planta.afectacion, {
+  @ManyToMany(() => Plantas, (planta) => planta.afectaciones, {
     cascade: true,
     onDelete: "CASCADE",
   })

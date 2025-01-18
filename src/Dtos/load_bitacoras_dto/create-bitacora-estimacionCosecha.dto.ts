@@ -42,6 +42,10 @@ export class PlantaDto {
   @IsArray()
   ID_afectacion!: number[];
 
+  @IsNumber()
+  @IsNotEmpty()
+  cantidadSanas!: number;
+
   @IsOptional()
   @Type(() => MazorcaDto)
   mazorcas!: MazorcaDto[];
@@ -51,7 +55,7 @@ export class MazorcaDto {
   @IsOptional()
   @IsNumber()
   @IsArray()
-  ID_afectacion!: number[];
+  ID_afectacion!: number;
 
   @IsNumber()
   @IsOptional()
