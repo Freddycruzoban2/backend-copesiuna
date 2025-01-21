@@ -27,6 +27,24 @@ AnalisisSuelo_route.get(
 );
 
 AnalisisSuelo_route.get(
+  "/getdashboard",
+  authenticate,
+  authorizeRole(["ADMIN"]),
+  async (req, res) => {
+    try {
+      const response = await AnalisisSueloCotrl.get_dashboard();
+      res.status(201).json(response);
+    } catch (error: any) {
+      res.status(error.statusCode).json({
+        message: "Internal Server Error",
+        error: (error as any).message,
+      });
+      console.log(error);
+    }
+  }
+);
+
+AnalisisSuelo_route.get(
   "/find/:id",
   authenticate,
   authorizeRole(["ADMIN"]),

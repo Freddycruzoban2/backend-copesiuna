@@ -1,5 +1,10 @@
 import { Request, Response } from "express";
-import { AnalisisSuelo, Productor } from "../entities";
+import {
+  AnalisisSuelo,
+  AsignacionTP,
+  EstimacionCosecha,
+  Productor,
+} from "../entities";
 import {
   AfectacionesMazorcaInterface,
   AnalisisSueloInterface,
@@ -9,6 +14,7 @@ import {
   UpdateAnalisisSuelo_dto,
 } from "../Dtos/analisis_suelo_dto";
 import { NotFoundException } from "../common/utils";
+import { Between } from "typeorm";
 
 export class AnalisisSueloService {
   createAnalisisSuelo = async (data: CreateAnalisisSuelo_dto) => {
@@ -62,6 +68,58 @@ export class AnalisisSueloService {
       throw new NotFoundException(`No hay registros de Analisis de suelo aun`);
     }
     return all_analisis_suelo;
+  };
+
+  getDashboardData = async () => {
+    const totalBitacorasSuelo = await AnalisisSuelo.count();
+    const totalBitacorasCosecha = await EstimacionCosecha.count();
+    const totalAsignaciones = await AsignacionTP.count();
+    const totalProductores = await Productor.count();
+
+    const now = new Date();
+    const lastMonth = new Date();
+    lastMonth.setMonth(now.getMonth() - 1);
+
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(now.getMonth() - 6);
+
+    const lastYear = new Date();
+    lastYear.setFullYear(now.getFullYear() - 1);
+
+    const bitacorasSueloLastMonth = await AnalisisSuelo.count({
+      where: {
+        fecha_levantamiento: Between(lastMonth, now),
+      },
+    });
+
+    const bitacorasCosechaLastMonth = await EstimacionCosecha.count({
+      where: {
+        fecha_create: Between(lastMonth, now),
+      },
+    });
+
+    const asignacionesLastSixMonths = await AsignacionTP.count({
+      where: {
+        fecha_create: Between(sixMonthsAgo, now),
+      },
+    });
+
+    const productoresLastYear = await Productor.count({
+      where: {
+        fecha_create: Between(lastYear, now),
+      },
+    });
+
+    return {
+      totalBitacorasSuelo,
+      bitacorasSueloLastMonth,
+      totalBitacorasCosecha,
+      bitacorasCosechaLastMonth,
+      totalAsignaciones,
+      asignacionesLastSixMonths,
+      totalProductores,
+      productoresLastYear,
+    };
   };
 
   findOneAnalisisSuelo = async (id: number) => {

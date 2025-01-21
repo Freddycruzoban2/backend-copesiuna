@@ -21,10 +21,10 @@ export class AnalisisSuelo extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @CreateDateColumn()
+  @Column()
   fecha_levantamiento!: Date;
 
-  @CreateDateColumn()
+  @Column()
   fecha_e_laboratorio!: Date;
 
   @Column()

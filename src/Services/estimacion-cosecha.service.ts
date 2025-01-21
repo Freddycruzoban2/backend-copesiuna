@@ -69,12 +69,34 @@ export class EstimacionCosechaService {
 
   findAllEstimacionCosecha = async () => {
     const all_estimacion_cosecha = await EstimacionCosecha.find({
-      relations: ["parcela", "plantas", "plantas.mazorcas"],
+      relations: [
+        "parcela.productor",
+        "parcela.tipo",
+        "parcela.cultivo",
+        "plantas.afectaciones",
+        "plantas.mazorcas.afectacion",
+      ],
     });
     if (all_estimacion_cosecha.length === 0) {
       throw new NotFoundException("No hay registros de Estimcion Cosecha Aun");
     }
-    return all_estimacion_cosecha;
+    return all_estimacion_cosecha.map((data) => ({
+      id: data.id,
+      estado_clima: data.estado_clima,
+      fecha_created: data.fecha_create,
+      fecha_updated: data.fecha_update,
+      parcela: {
+        id: data.parcela.id,
+        descripcion: data.parcela.descripcion,
+        tamaño_parcela: data.parcela.tamaño_parcela,
+        fecha_created: data.parcela.fecha_create,
+        fecha_update: data.parcela.fecha_update,
+        productor: data.parcela.productor,
+        cultivo: data.parcela.cultivo,
+        tipo_parcela: data.parcela.tipo,
+      },
+      plantas: data.plantas,
+    }));
   };
 
   findOneEstimacionCosecha = async (id: number) => {

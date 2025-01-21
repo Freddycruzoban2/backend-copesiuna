@@ -20,6 +20,14 @@ export class AnalisisSueloController {
     );
   };
 
+  get_dashboard = async (): Promise<ApiResponse<any>> => {
+    const result = await this.analisisSueloService.getDashboardData();
+    return new ApiResponse(
+      result,
+      "datos de Analisis de Suelo retornados con Exito"
+    );
+  };
+
   find_one = async (id: number): Promise<ApiResponse<any>> => {
     const result = await this.analisisSueloService.findOneAnalisisSuelo(id);
     return new ApiResponse(
